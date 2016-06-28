@@ -2,6 +2,8 @@
 
 An **image gallery** component for react-native apps with common gestures like pan, pinch and doubleTap. Written in pure JavaScript. Supports both iOS and Android.
 
+We'll continue to make this component as elegant as the iOS system gallery and keep it simple(Focusing on the image-viewing function).
+
 ![](Demo/demo.gif)
 
 
