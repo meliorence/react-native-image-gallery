@@ -45,12 +45,12 @@ export default class Gallery extends Component {
 
   resetHistoryImageTransform() {
     let transformer = this.getImageTransformer(this.currentPage + 1);
-    if(transformer) {
+    if (transformer) {
       transformer.forceUpdateTransform({scale: 1, translateX: 0, translateY: 0});
     }
 
     transformer = this.getImageTransformer(this.currentPage - 1);
-    if(transformer) {
+    if (transformer) {
       transformer.forceUpdateTransform({scale: 1, translateX: 0, translateY: 0});
     }
   }
@@ -74,9 +74,9 @@ export default class Gallery extends Component {
         this.activeImageHandler(evt, gestureState);
       },
       onResponderMove: (evt, gestureState) => {
-        if(this.firstMove) {
+        if (this.firstMove) {
           this.firstMove = false;
-          if(this.shouldScrollListView(evt, gestureState)) {
+          if (this.shouldScrollListView(evt, gestureState)) {
             this.activeListViewHandler(evt, gestureState);
           }
         }
@@ -116,8 +116,8 @@ export default class Gallery extends Component {
   }
 
   activeImageHandler(evt, gestureState) {
-    if(this.activeHandler !== this.imageHandler) {
-      if(this.activeHandler === this.listViewHandler) {
+    if (this.activeHandler !== this.imageHandler) {
+      if (this.activeHandler === this.listViewHandler) {
         this.listViewHandler.onEnd(evt, gestureState);
       }
       console.log('activeImageHandler...');
@@ -127,8 +127,8 @@ export default class Gallery extends Component {
   }
 
   activeListViewHandler(evt, gestureState) {
-    if(this.activeHandler !== this.listViewHandler) {
-      if(this.activeHandler === this.imageHandler) {
+    if (this.activeHandler !== this.listViewHandler) {
+      if (this.activeHandler === this.imageHandler) {
         this.imageHandler.onEnd(evt, gestureState);
       }
       console.log('activeListViewHandler...');
@@ -138,24 +138,24 @@ export default class Gallery extends Component {
   }
 
   shouldScrollListView(evt, gestureState) {
-    if(gestureState.numberActiveTouches > 1) {
+    if (gestureState.numberActiveTouches > 1) {
       return false;
     }
     const viewTransformer = this.getCurrentImageTransformer();
     const space = viewTransformer.getAvailableTranslateSpace();
     const dx = gestureState.moveX - gestureState.previousMoveX;
 
-    if(dx > 0 && space.left <= 0) {
+    if (dx > 0 && space.left <= 0 && this.currentPage > 0) {
       return true;
     }
-    if(dx < 0 && space.right <= 0) {
+    if (dx < 0 && space.right <= 0 && this.currentPage < this.pageCount - 1) {
       return true;
     }
     return false;
   }
 
   getImageTransformer(page) {
-    if(page >= 0 && page < this.pageCount) {
+    if (page >= 0 && page < this.pageCount) {
       return this.imageRefs.get(page + '').getViewTransformerInstance();
     }
   }
@@ -221,7 +221,7 @@ export default class Gallery extends Component {
 
   getPageByScrollOffset(x) {
     let page = Math.floor(x / this.state.width + 0.5);
-    page = Math.min(this.pageCount-1, page);
+    page = Math.min(this.pageCount - 1, page);
     page = Math.max(0, page);
     return page;
   }
@@ -233,7 +233,7 @@ export default class Gallery extends Component {
       } else {
         this.flingToPage(this.pageCount - 1, vx);
       }
-    } else if(vx > MIN_FLING_VELOCITY) {
+    } else if (vx > MIN_FLING_VELOCITY) {
       if (this.currentPage > 0) {
         this.flingToPage(this.currentPage - 1, vx);
       } else {
