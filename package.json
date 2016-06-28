@@ -17,7 +17,7 @@
   },
   "homepage": "https://github.com/ldn0x7dc/react-native-gallery#readme",
   "dependencies": {
-    "react-native-scroller": "0.0.4",
-    "react-native-transformable-image": "0.0.6"
+    "react-native-scroller": "0.0.5",
+    "react-native-transformable-image": "0.0.7"
   }
 }

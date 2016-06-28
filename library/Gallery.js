@@ -37,7 +37,6 @@ export default class Gallery extends Component {
   onScroll(dx, dy, scroller) {
     this.getListViewInstance().scrollTo({x: this.scroller.getCurrX(), animated: false});
     if (dx === 0 && dy === 0 && scroller.isFinished()) {
-      console.log('onScroll...finished');
       this.resetHistoryImageTransform();
     } else {
       this.currentPage = this.getPageByScrollOffset(this.scroller.getCurrX());
@@ -104,9 +103,9 @@ export default class Gallery extends Component {
     }
 
     this.imageHandler = {
-      onStart: (evt, gestureState) => {
+      onStart: ((evt, gestureState) => {
         this.getCurrentImageTransformer().onResponderGrant(evt, gestureState);
-      },
+      }),
       onMove: (evt, gestureState) => {
         this.getCurrentImageTransformer().onResponderMove(evt, gestureState);
       },
@@ -145,10 +144,6 @@ export default class Gallery extends Component {
     const viewTransformer = this.getCurrentImageTransformer();
     const space = viewTransformer.getAvailableTranslateSpace();
     const dx = gestureState.moveX - gestureState.previousMoveX;
-    console.log('shouldScrollListView...' + JSON.stringify(gestureState));
-    console.log('shouldScrollListView...space=' + JSON.stringify(space) + ', dx=' + dx);
-
-
 
     if(dx > 0 && space.left <= 0) {
       return true;
@@ -257,11 +252,7 @@ export default class Gallery extends Component {
     velocityX *= -1000; //per sec
 
     const finalX = this.getScrollOffsetOfPage(page);
-    let minX = Math.min(finalX, this.scroller.getCurrX());
-    let maxX = Math.max(finalX, this.scroller.getCurrX());
-    minX = maxX = finalX;
-    console.log('flingToPage...page=' + page + ', velocityX=' + velocityX + ', finalX=' + finalX);
-    this.scroller.fling(this.scroller.getCurrX(), 0, velocityX, 0, minX, maxX, 0, 0);
+    this.scroller.fling(this.scroller.getCurrX(), 0, velocityX, 0, finalX, finalX, 0, 0);
   }
 
   scrollToPage(page) {
