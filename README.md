@@ -57,3 +57,4 @@ This component wraps a horizontal ListView, which is composed of **transformable
 1. Support **initialPage** prop
 2. Support **pageMargin** prop 
 3. Support custom views on each page(so that we can implement functions like comments, image descriptions, like button, etc)
+4. Dump off-screen images for better performance.(Maybe simply replacing the ListView wraper with [react-native-sglistview](https://github.com/sghiassy/react-native-sglistview))
