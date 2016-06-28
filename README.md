@@ -4,6 +4,8 @@ An **image gallery** component for react-native apps with common gestures like p
 
 We'll continue to make this component as elegant as the iOS system gallery and keep it simple(Focusing on the image-viewing function).
 
+This component works on react-native 0.28+.
+
 ![](Demo/demo.gif)
 
 
