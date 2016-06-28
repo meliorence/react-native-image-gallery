@@ -1,0 +1,23 @@
+{
+  "name": "react-native-gallery",
+  "version": "0.0.2",
+  "description": "",
+  "main": "library/Gallery.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ldn0x7dc/react-native-gallery.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ldn0x7dc/react-native-gallery/issues"
+  },
+  "homepage": "https://github.com/ldn0x7dc/react-native-gallery#readme",
+  "dependencies": {
+    "react-native-scroller": "0.0.4",
+    "react-native-transformable-image": "0.0.6"
+  }
+}
