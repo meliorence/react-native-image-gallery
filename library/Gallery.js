@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PropTypes, Component } from 'react';
 import {
   View,
   ScrollView,
@@ -12,6 +12,15 @@ import {createResponder} from 'react-native-gesture-responder';
 const MIN_FLING_VELOCITY = 0.5;
 
 export default class Gallery extends Component {
+
+  static propTypes = {
+    ...View.propTypes,
+    initialPage: PropTypes.number,
+  }
+
+  defaultProps = {
+    initialPage: 0
+  }
 
   constructor(props) {
     super(props);
@@ -32,14 +41,16 @@ export default class Gallery extends Component {
 
     this.activeHandler;
     this.firstMove = true;
+    this.initialPageSettled = false;
   }
 
   onScroll(dx, dy, scroller) {
-    this.getListViewInstance().scrollTo({x: this.scroller.getCurrX(), animated: false});
     if (dx === 0 && dy === 0 && scroller.isFinished()) {
-      this.resetHistoryImageTransform();
+      if(!this.activeHandler) {
+        this.resetHistoryImageTransform();
+      }
     } else {
-      this.currentPage = this.getPageByScrollOffset(this.scroller.getCurrX());
+      this.getListViewInstance().scrollTo({x: this.scroller.getCurrX(), animated: false});
     }
   }
 
@@ -54,7 +65,6 @@ export default class Gallery extends Component {
       transformer.forceUpdateTransform({scale: 1, translateX: 0, translateY: 0});
     }
   }
-
 
   updateData(data) {
     this.setState({
@@ -112,6 +122,13 @@ export default class Gallery extends Component {
       onEnd: (evt, gestureState) => {
         this.getCurrentImageTransformer().onResponderRelease(evt, gestureState);
       }
+    }
+  }
+
+  componentDidUpdate() {
+    if(!this.initialPageSettled) {
+      this.initialPageSettled = true;
+      this.scrollToPage(this.props.initialPage);
     }
   }
 
@@ -240,7 +257,16 @@ export default class Gallery extends Component {
         this.flingToPage(0, vx);
       }
     } else {
-      this.scrollToPage(this.getPageByScrollOffset(this.scroller.getCurrX()));
+      let page = this.currentPage;
+      let progress = (this.scroller.getCurrX() - this.currentPage * this.state.width) / this.state.width;
+      if (progress > 1 / 3) {
+        page += 1;
+      } else if (progress < -1 / 3) {
+        page -= 1;
+      }
+      page = Math.min(this.pageCount - 1, page);
+      page = Math.max(0, page);
+      this.scrollToPage(page);
     }
   }
 
@@ -250,17 +276,24 @@ export default class Gallery extends Component {
 
   flingToPage(page, velocityX) {
     velocityX *= -1000; //per sec
-
     const finalX = this.getScrollOffsetOfPage(page);
     this.scroller.fling(this.scroller.getCurrX(), 0, velocityX, 0, finalX, finalX, 0, 0);
+    this.setPage(page);
   }
 
   scrollToPage(page) {
     const finalX = this.getScrollOffsetOfPage(page);
     this.scroller.startScroll(this.scroller.getCurrX(), 0, finalX - this.scroller.getCurrX(), 0, 200);
+    this.setPage(page);
   }
 
   scrollByOffset(dx) {
     this.scroller.startScroll(this.scroller.getCurrX(), 0, -dx, 0, 0);
+  }
+
+  setPage(page) {
+    page = Math.min(this.pageCount - 1, page);
+    page = Math.max(0, page);
+    this.currentPage = page;
   }
 }
