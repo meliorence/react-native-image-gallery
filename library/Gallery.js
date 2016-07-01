@@ -1,57 +1,36 @@
-import React, { PropTypes, Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import {
-  View,
-  ScrollView,
-  ListView
+  View
 } from 'react-native';
 
 import Image from 'react-native-transformable-image';
-import Scroller from 'react-native-scroller';
+import ViewPager from '@ldn0x7dc/react-native-view-pager';
 import {createResponder} from 'react-native-gesture-responder';
 
-const MIN_FLING_VELOCITY = 0.5;
 
 export default class Gallery extends Component {
 
   static propTypes = {
     ...View.propTypes,
-    initialPage: PropTypes.number,
-  }
+    images: PropTypes.array,
 
-  defaultProps = {
-    initialPage: 0
-  }
+    initialPage: PropTypes.number,
+    pageMargin: PropTypes.number,
+    onPageSelected: PropTypes.func,
+    onPageScrollStateChanged: PropTypes.func,
+    onPageScroll: PropTypes.func,
+  };
 
   constructor(props) {
     super(props);
-    const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-    this.state = {
-      dataSource: ds.cloneWithRows([]),
 
-      width: 0,
-      height: 0
-    }
-
+    this.imageRefs = new Map();
+    this.activeResponder;
+    this.activeGesture = false;
+    this.firstMove = true;
     this.currentPage = 0;
     this.pageCount = 0;
-
-    this.firstLayout = true;
-    this.imageRefs = new Map();
-    this.scroller = new Scroller(true, this.onScroll.bind(this));
-
-    this.activeHandler;
-    this.firstMove = true;
-    this.initialPageSettled = false;
-  }
-
-  onScroll(dx, dy, scroller) {
-    if (dx === 0 && dy === 0 && scroller.isFinished()) {
-      if(!this.activeHandler) {
-        this.resetHistoryImageTransform();
-      }
-    } else {
-      this.getListViewInstance().scrollTo({x: this.scroller.getCurrX(), animated: false});
-    }
+    this.firstDx = 0;
   }
 
   resetHistoryImageTransform() {
@@ -66,53 +45,73 @@ export default class Gallery extends Component {
     }
   }
 
-  updateData(data) {
-    this.setState({
-      dataSource: this.state.dataSource.cloneWithRows(data),
-    });
-    this.pageCount = data.length;
-  }
-
-
   componentWillMount() {
+    function onResponderReleaseOrTerminate(evt, gestureState) {
+      if(this.activeResponder) {
+        if(this.activeResponder === this.viewPagerResponder && !this.shouldScrollViewPager(evt, gestureState)) {
+          this.activeResponder.onEnd(evt, gestureState, true); //pass true to disable ViewPager settle
+          this.getViewPagerInstance().flingToPage(this.currentPage, gestureState.vx);
+        } else {
+          this.activeResponder.onEnd(evt, gestureState);
+        }
+        this.activeResponder = null;
+      }
+      this.firstMove = true;
+      this.firstDx = 0;
+    }
+
     this.gestureResponder = createResponder({
       onStartShouldSetResponderCapture: (evt, gestureState) => true,
       onStartShouldSetResponder: (evt, gestureState) => {
         return true;
       },
       onResponderGrant: (evt, gestureState) => {
-        this.activeImageHandler(evt, gestureState);
+        this.activeImageResponder(evt, gestureState);
       },
       onResponderMove: (evt, gestureState) => {
         if (this.firstMove) {
           this.firstMove = false;
-          if (this.shouldScrollListView(evt, gestureState)) {
-            this.activeListViewHandler(evt, gestureState);
+          if (this.shouldScrollViewPager(evt, gestureState)) {
+            this.activeViewPagerResponder(evt, gestureState);
           }
         }
-        this.activeHandler.onMove(evt, gestureState);
+        if(this.activeResponder === this.viewPagerResponder) {
+          const dx = gestureState.moveX - gestureState.previousMoveX;
+          if(dx > 0 && this.firstDx < 0 && !this.shouldScrollViewPager(evt, gestureState)) {
+            const offset = this.getViewPagerInstance().getScrollOffsetFromCurrentPage();
+            if(dx > offset) {
+              this.getViewPagerInstance().scrollByOffset(offset);
+              gestureState.moveX -= offset;
+              this.activeImageResponder(evt, gestureState);
+            }
+          } else if(dx < 0 && this.firstDx > 0 && !this.shouldScrollViewPager(evt, gestureState)) {
+            const offset = this.getViewPagerInstance().getScrollOffsetFromCurrentPage();
+            if(dx < offset) {
+              this.getViewPagerInstance().scrollByOffset(offset);
+              gestureState.moveX += offset;
+              this.activeImageResponder(evt, gestureState);
+            }
+          }
+        }
+        this.activeResponder.onMove(evt, gestureState);
       },
-      onResponderRelease: (evt, gestureState) => {
-        this.activeHandler.onEnd(evt, gestureState);
-        this.activeHandler = null;
-        this.firstMove = true;
-      }
+      onResponderRelease: onResponderReleaseOrTerminate.bind(this),
+      onResponderTerminate: onResponderReleaseOrTerminate.bind(this)
     });
 
-    this.listViewHandler = {
+    this.viewPagerResponder = {
       onStart: (evt, gestureState) => {
-        this.scroller.forceFinished(true);
+        this.getViewPagerInstance().onResponderGrant(evt, gestureState);
       },
       onMove: (evt, gestureState) => {
-        const dx = gestureState.moveX - gestureState.previousMoveX;
-        this.scrollByOffset(dx);
+        this.getViewPagerInstance().onResponderMove(evt, gestureState);
       },
-      onEnd: (evt, gestureState) => {
-        this.settlePage(gestureState.vx);
+      onEnd: (evt, gestureState, disableSettle) => {
+        this.getViewPagerInstance().onResponderRelease(evt, gestureState, disableSettle);
       }
     }
 
-    this.imageHandler = {
+    this.imageResponder = {
       onStart: ((evt, gestureState) => {
         this.getCurrentImageTransformer().onResponderGrant(evt, gestureState);
       }),
@@ -125,36 +124,7 @@ export default class Gallery extends Component {
     }
   }
 
-  componentDidUpdate() {
-    if(!this.initialPageSettled) {
-      this.initialPageSettled = true;
-      this.scrollToPage(this.props.initialPage);
-    }
-  }
-
-  activeImageHandler(evt, gestureState) {
-    if (this.activeHandler !== this.imageHandler) {
-      if (this.activeHandler === this.listViewHandler) {
-        this.listViewHandler.onEnd(evt, gestureState);
-      }
-      console.log('activeImageHandler...');
-      this.activeHandler = this.imageHandler;
-      this.imageHandler.onStart(evt, gestureState);
-    }
-  }
-
-  activeListViewHandler(evt, gestureState) {
-    if (this.activeHandler !== this.listViewHandler) {
-      if (this.activeHandler === this.imageHandler) {
-        this.imageHandler.onEnd(evt, gestureState);
-      }
-      console.log('activeListViewHandler...');
-      this.activeHandler = this.listViewHandler;
-      this.listViewHandler.onStart(evt, gestureState)
-    }
-  }
-
-  shouldScrollListView(evt, gestureState) {
+  shouldScrollViewPager(evt, gestureState) {
     if (gestureState.numberActiveTouches > 1) {
       return false;
     }
@@ -163,13 +133,37 @@ export default class Gallery extends Component {
     const dx = gestureState.moveX - gestureState.previousMoveX;
 
     if (dx > 0 && space.left <= 0 && this.currentPage > 0) {
+      this.firstDx = dx;
       return true;
     }
     if (dx < 0 && space.right <= 0 && this.currentPage < this.pageCount - 1) {
+      this.firstDx = dx
       return true;
     }
     return false;
   }
+
+  activeImageResponder(evt, gestureState) {
+    if (this.activeResponder !== this.imageResponder) {
+      if (this.activeResponder === this.viewPagerResponder) {
+        this.viewPagerResponder.onEnd(evt, gestureState, true); //pass true to disable ViewPager settle
+      }
+      this.activeResponder = this.imageResponder;
+      this.imageResponder.onStart(evt, gestureState);
+    }
+  }
+
+  activeViewPagerResponder(evt, gestureState) {
+    if (this.activeResponder !== this.viewPagerResponder) {
+      if (this.activeResponder === this.imageResponder) {
+        this.imageResponder.onEnd(evt, gestureState);
+      }
+      this.activeResponder = this.viewPagerResponder;
+      this.viewPagerResponder.onStart(evt, gestureState)
+    }
+  }
+
+
 
   getImageTransformer(page) {
     if (page >= 0 && page < this.pageCount) {
@@ -181,119 +175,65 @@ export default class Gallery extends Component {
     return this.getImageTransformer(this.currentPage);
   }
 
-  getListViewInstance() {
-    return this.refs['innerListView'];
+  getViewPagerInstance() {
+    return this.refs['galleryViewPager'];
   }
 
   render() {
+    let gestureResponder = this.gestureResponder;
+
+    let images = this.props.images;
+    if(!images) {
+      images = [];
+    }
+    this.pageCount = images.length;
+
+    if(this.pageCount <= 0) {
+      gestureResponder = {};
+    }
+
     return (
-      <View
+      <ViewPager
         {...this.props}
-        style={[this.props.style, {flex: 1}]}
-        {...this.gestureResponder}>
-        <ListView
-          style={{flex: 1}}
-          ref='innerListView'
-          scrollEnabled={false}
-          dataSource={this.state.dataSource}
-          renderRow={this.renderRow.bind(this)}
-          onLayout={this.onLayout.bind(this)}
-          horizontal={true}
-          enableEmptySections={true}
-        />
-      </View>
+        ref='galleryViewPager'
+        scrollEnabled={false}
+        renderPage={this.renderPage.bind(this)}
+        pageDataArray={images}
+        {...gestureResponder}
+        onPageSelected={this.onPageSelected.bind(this)}
+        onPageScrollStateChanged={this.onPageScrollStateChanged.bind(this)}
+        onPageScroll={this.onPageScroll.bind(this)}
+      />
     );
   }
 
-  renderRow(rowData, sectionID, rowID, highlightRow) {
-    console.log('renderRow...rowID=' + rowID);
+  onPageSelected(page) {
+    this.currentPage = page;
+    this.props.onPageSelected && this.props.onPageSelected(page);
+  }
+
+  onPageScrollStateChanged(state) {
+    if(state === 'idle') {
+      this.resetHistoryImageTransform();
+    }
+    this.props.onPageScrollStateChanged && this.props.onPageScrollStateChanged(state);
+  }
+
+  onPageScroll(e) {
+    this.props.onPageScroll && this.props.onPageScroll(e);
+  }
+
+  renderPage(pageData, pageId, layout) {
     return (
       <Image
-        ref={this.onRowRef.bind(this, rowID)}
-        key={'innerImage#' + rowID}
-        style={{width: this.state.width, height: this.state.height}}
-        source={{uri: rowData}}/>
+        ref={this.onImageRef.bind(this, pageId)}
+        key={'innerImage#' + pageId}
+        style={{width: layout.width, height: layout.height}}
+        source={{uri: pageData}}/>
     );
   }
 
-  onRowRef(rowID, ref) {
-    console.log('ref...rowID=' + rowID + ', ' + ref);
-    this.imageRefs.set(rowID, ref);
-  }
-
-  onLayout(e) {
-    console.log('onLayout...' + JSON.stringify(e.nativeEvent.layout));
-    let {width, height} = e.nativeEvent.layout;
-    let sizeChanged = this.state.width !== width || this.state.height !== height;
-    if (width && height && sizeChanged) {
-      this.setState({
-        width, height
-      });
-      if (this.firstLayout) {
-        this.firstLayout = false;
-        this.updateData(this.props.images);
-      }
-    }
-  }
-
-  getPageByScrollOffset(x) {
-    let page = Math.floor(x / this.state.width + 0.5);
-    page = Math.min(this.pageCount - 1, page);
-    page = Math.max(0, page);
-    return page;
-  }
-
-  settlePage(vx) {
-    if (vx < -MIN_FLING_VELOCITY) {
-      if (this.currentPage < this.pageCount - 1) {
-        this.flingToPage(this.currentPage + 1, vx);
-      } else {
-        this.flingToPage(this.pageCount - 1, vx);
-      }
-    } else if (vx > MIN_FLING_VELOCITY) {
-      if (this.currentPage > 0) {
-        this.flingToPage(this.currentPage - 1, vx);
-      } else {
-        this.flingToPage(0, vx);
-      }
-    } else {
-      let page = this.currentPage;
-      let progress = (this.scroller.getCurrX() - this.currentPage * this.state.width) / this.state.width;
-      if (progress > 1 / 3) {
-        page += 1;
-      } else if (progress < -1 / 3) {
-        page -= 1;
-      }
-      page = Math.min(this.pageCount - 1, page);
-      page = Math.max(0, page);
-      this.scrollToPage(page);
-    }
-  }
-
-  getScrollOffsetOfPage(page) {
-    return page * this.state.width;
-  }
-
-  flingToPage(page, velocityX) {
-    velocityX *= -1000; //per sec
-    const finalX = this.getScrollOffsetOfPage(page);
-    this.scroller.fling(this.scroller.getCurrX(), 0, velocityX, 0, finalX, finalX, 0, 0);
-    this.setPage(page);
-  }
-
-  scrollToPage(page) {
-    const finalX = this.getScrollOffsetOfPage(page);
-    this.scroller.startScroll(this.scroller.getCurrX(), 0, finalX - this.scroller.getCurrX(), 0, 200);
-    this.setPage(page);
-  }
-
-  scrollByOffset(dx) {
-    this.scroller.startScroll(this.scroller.getCurrX(), 0, -dx, 0, 0);
-  }
-
-  setPage(page) {
-    page = Math.min(this.pageCount - 1, page);
-    page = Math.max(0, page);
-    this.currentPage = page;
+  onImageRef(pageId, ref) {
+    this.imageRefs.set(pageId, ref);
   }
 }
