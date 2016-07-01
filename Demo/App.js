@@ -17,6 +17,7 @@ export default class App extends Component {
       <Gallery
         style={{backgroundColor: 'black'}}
         initialPage={3}
+        pageMargin={0}
         images={[
           'http://p10.qhimg.com/t019e9cf51692f735be.jpg',
           'http://ww2.sinaimg.cn/mw690/714a59a7tw1dxqkkg0cwlj.jpg',

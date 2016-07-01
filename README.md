@@ -1,10 +1,13 @@
 # react-native-gallery
 
-An **image gallery** component for react-native apps with common gestures like pan, pinch and doubleTap. Written in pure JavaScript. Supports both iOS and Android.
+An pure JavaScript image gallery component for react-native apps with common gestures like pan, pinch and doubleTap, supporting both iOS and Android.
 
-We'll continue to make this component as elegant as the iOS system gallery and keep it simple(Focusing on the image-viewing function).
+This component aims to be the best image viewer for react-native apps. Comparing with other components both on react-native and native iOS/Android, the component should be more elegant in following aspects: (mimics iOS system photo album app)
 
-This component works on react-native 0.28+.
+* Gesture handle: besides common pan, pinch and doubleTap, this component does well in targeting foucs point( or pivot) when zoom-in and zoom-out.
+* Responder switch: the gesture responder switch is more flexible than any other component, that is, the scrollable container and the wrapped image children perform well in acquiring and releasing gesture responder from/to each other.
+
+This component works on react-native 0.28+ and supports remote images only for now.
 
 ![](Demo/demo.gif)
 
@@ -50,13 +53,21 @@ import Gallery from 'react-native-gallery';
   }
 ```
 
-This component wraps a horizontal ListView, which is composed of **transformable images**(check [react-native-transformable-image](https://github.com/ldn0x7dc/react-native-transformable-image) for more detail).
+This component utilizes **[@ldn0x7dc/react-native-view-pager](https://github.com/ldn0x7dc/react-native-view-pager)** as the scrollable container and **[react-native-transformable-image](https://github.com/ldn0x7dc/react-native-transformable-image)** as the wrapped image. 
+
+#### Props
+
+* **images**: array, contains image urls
+* **initialPage**, **pageMargin**, **onPageSelected**, **onPageScrollStateChanged**, **onPageScroll**: inherited from **[@ldn0x7dc/react-native-view-pager](https://github.com/ldn0x7dc/react-native-view-pager)**. Check the link for more details.
+
+
+
+#### Known issues
+
+* Do not use pageMargin for now. Some problems exist.
 
 
 
 ## TODO
 
-1. Support **initialPage** prop
-2. Support **pageMargin** prop 
-3. Support custom views on each page(so that we can implement functions like comments, image descriptions, like button, etc)
-4. Dump off-screen images for better performance.(Maybe simply replacing the ListView wraper with [react-native-sglistview](https://github.com/sghiassy/react-native-sglistview))
+* Dump off-screen images for better performance if needed

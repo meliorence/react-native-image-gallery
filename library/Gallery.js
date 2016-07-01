@@ -48,8 +48,10 @@ export default class Gallery extends Component {
   componentWillMount() {
     function onResponderReleaseOrTerminate(evt, gestureState) {
       if(this.activeResponder) {
-        if(this.activeResponder === this.viewPagerResponder && !this.shouldScrollViewPager(evt, gestureState)) {
-          this.activeResponder.onEnd(evt, gestureState, true); //pass true to disable ViewPager settle
+        if(this.activeResponder === this.viewPagerResponder
+          && !this.shouldScrollViewPager(evt, gestureState)
+          && Math.abs(gestureState.vx) > 0.5) {
+          this.activeResponder.onEnd(evt, gestureState, true);
           this.getViewPagerInstance().flingToPage(this.currentPage, gestureState.vx);
         } else {
           this.activeResponder.onEnd(evt, gestureState);
