@@ -76,6 +76,3 @@ If you encounter any problem that seems unnormal, just create an issue or check 
 ## TODO
 
 * Dump off-screen images for better performance if needed
-* Provide a convenient interface to implement floating custom views like social comment box or other menus.
-  * onSingleTapConfirmed(pageId): Called after user single tapped (not double) **and** the gallery is idle. This should be a good time for you to display the responding floating view. 
-  * onGalleryStateChanged(idle, ...): Called when gallery becomes busy ( user starts to move or zoom images) or when gallery becomes idle (no fingers active nor any animation going on). If *idle* is false, it's a good time for your to hide any floating views.
