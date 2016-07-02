@@ -2,7 +2,7 @@
 
 An pure JavaScript image gallery component for react-native apps with common gestures like pan, pinch and doubleTap, supporting both iOS and Android.
 
-This component aims to be the best image viewer for react-native apps. Comparing with other components both on react-native and native iOS/Android, the component should be more elegant in following aspects: (mimics iOS system photo album app)
+This component aims to be (one of ) the best image viewer for react-native apps. Comparing with other components both on react-native and native iOS/Android, the component should be more elegant in following aspects: (mimics iOS system photo album app)
 
 * Gesture handle: besides common pan, pinch and doubleTap, this component does well in targeting foucs point( or pivot) when zoom-in and zoom-out.
 * Responder switch: the gesture responder switch is more flexible than any other component, that is, the scrollable container and the wrapped image children perform well in acquiring and releasing gesture responder from/to each other.
