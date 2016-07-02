@@ -49,9 +49,13 @@ This component utilizes **[@ldn0x7dc/react-native-view-pager](https://github.com
 * **initialPage**, **pageMargin**, **onPageSelected**, **onPageScrollStateChanged**, **onPageScroll**: inherited from **[@ldn0x7dc/react-native-view-pager](https://github.com/ldn0x7dc/react-native-view-pager)**. Check the link for more details.
 
 
-#### Known issues
 
-If any, welcome to create one [here](https://github.com/ldn0x7dc/react-native-gallery/issues)
+
+## Attention
+
+This component is being actively developed but should be ready for production realease.
+
+If you encounter any problem that seems unnormal, just create an issue or check out the latest release.
 
 
 ## TODO
