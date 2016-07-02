@@ -19,6 +19,9 @@ export default class Gallery extends Component {
     onPageSelected: PropTypes.func,
     onPageScrollStateChanged: PropTypes.func,
     onPageScroll: PropTypes.func,
+
+    onSingleTapConfirmed: PropTypes.func,
+    onGalleryStateChanged: PropTypes.func
   };
 
   constructor(props) {
@@ -60,6 +63,7 @@ export default class Gallery extends Component {
       }
       this.firstMove = true;
       this.firstDx = 0;
+      this.props.onGalleryStateChanged && this.props.onGalleryStateChanged(true);
     }
 
     this.gestureResponder = createResponder({
@@ -76,6 +80,7 @@ export default class Gallery extends Component {
           if (this.shouldScrollViewPager(evt, gestureState)) {
             this.activeViewPagerResponder(evt, gestureState);
           }
+          this.props.onGalleryStateChanged && this.props.onGalleryStateChanged(false);
         }
         if(this.activeResponder === this.viewPagerResponder) {
           const dx = gestureState.moveX - gestureState.previousMoveX;
@@ -98,7 +103,10 @@ export default class Gallery extends Component {
         this.activeResponder.onMove(evt, gestureState);
       },
       onResponderRelease: onResponderReleaseOrTerminate.bind(this),
-      onResponderTerminate: onResponderReleaseOrTerminate.bind(this)
+      onResponderTerminate: onResponderReleaseOrTerminate.bind(this),
+      onResponderSingleTapConfirmed: (evt, gestureState) => {
+        this.props.onSingleTapConfirmed && this.props.onSingleTapConfirmed(this.currentPage);
+      }
     });
 
     this.viewPagerResponder = {

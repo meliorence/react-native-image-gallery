@@ -1,6 +1,6 @@
 # react-native-gallery
 
-An pure JavaScript image gallery component for react-native apps with common gestures like pan, pinch and doubleTap, supporting both iOS and Android.
+A pure JavaScript image gallery component for react-native apps with common gestures like pan, pinch and doubleTap, supporting both iOS and Android.
 
 This component aims to be (one of ) the best image viewer for react-native apps. Comparing with other components both on react-native and native iOS/Android, the component should be more elegant in following aspects: (mimics iOS system photo album app)
 
@@ -47,7 +47,22 @@ This component utilizes **[@ldn0x7dc/react-native-view-pager](https://github.com
 
 * **images**: array, contains image urls
 * **initialPage**, **pageMargin**, **onPageSelected**, **onPageScrollStateChanged**, **onPageScroll**: inherited from **[@ldn0x7dc/react-native-view-pager](https://github.com/ldn0x7dc/react-native-view-pager)**. Check the link for more details.
+* **onSingleTapConfirmed**: Called after when user single taped( not a double tap)
+* **onGalleryStateChanged**: function
 
+
+​	(idle) => {}.
+
+
+
+### Add your custom views above image
+
+It's a common practice to float a comment box or like button above the image. This component provides a convenient interface to implement this feature:
+
+- onSingleTapConfirmed(): a good time for you to display the responding floating view. 
+- onGalleryStateChanged(idle): If *idle* is false, it's a good time for your to hide any floating views.
+
+Check the Demo project a simple demonstration.
 
 
 
