@@ -165,8 +165,6 @@ export default class Gallery extends Component {
     }
   }
 
-
-
   getImageTransformer(page) {
     if (page >= 0 && page < this.pageCount) {
       return this.imageRefs.get(page + '').getViewTransformerInstance();

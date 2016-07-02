@@ -30,7 +30,7 @@ import Gallery from 'react-native-gallery';
   render() {
     return (
       <Gallery
-        style={{backgroundColor: 'black'}}
+        style={{flex: 1, backgroundColor: 'black'}}
         images={[
           'http://p10.qhimg.com/t019e9cf51692f735be.jpg',
           'http://ww2.sinaimg.cn/mw690/714a59a7tw1dxqkkg0cwlj.jpg',
@@ -61,11 +61,9 @@ This component utilizes **[@ldn0x7dc/react-native-view-pager](https://github.com
 * **initialPage**, **pageMargin**, **onPageSelected**, **onPageScrollStateChanged**, **onPageScroll**: inherited from **[@ldn0x7dc/react-native-view-pager](https://github.com/ldn0x7dc/react-native-view-pager)**. Check the link for more details.
 
 
-
 #### Known issues
 
-* Do not use pageMargin for now. Some problems exist.
-
+If any, welcome to create one [here](https://github.com/ldn0x7dc/react-native-gallery/issues)
 
 
 ## TODO

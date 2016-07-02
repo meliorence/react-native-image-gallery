@@ -15,9 +15,9 @@ export default class App extends Component {
   render() {
     return (
       <Gallery
-        style={{backgroundColor: 'black'}}
+        style={{flex: 1, backgroundColor: 'black', margin: 20}}
         initialPage={3}
-        pageMargin={0}
+        pageMargin={10}
         images={[
           'http://p10.qhimg.com/t019e9cf51692f735be.jpg',
           'http://ww2.sinaimg.cn/mw690/714a59a7tw1dxqkkg0cwlj.jpg',
