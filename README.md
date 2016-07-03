@@ -2,12 +2,12 @@
 
 A pure JavaScript image gallery component for react-native apps with common gestures like pan, pinch and doubleTap, supporting both iOS and Android.
 
-This component aims to be (one of ) the best image viewer for react-native apps. Comparing with other components both on react-native and native iOS/Android, the component should be more elegant in following aspects: (mimics iOS system photo album app)
+This component aims to be (one of ) the best image viewer for react-native apps. Comparing with other gallery alike components, this one should be more elegant in following aspects: (mimics iOS system photo album app)
 
 * Gesture handle: besides common pan, pinch and doubleTap, this component does well in targeting foucs point( or pivot) when zoom-in and zoom-out.
 * Responder switch: the gesture responder switch is more flexible than any other component, that is, the scrollable container and the wrapped image children perform well in acquiring and releasing gesture responder from/to each other.
 
-This component works on react-native 0.28+ and supports remote images only for now.
+This component works on react-native **0.28+** and only supports remote images for now.
 
 ![](Demo/demo.gif)
 
@@ -47,11 +47,9 @@ This component utilizes **[@ldn0x7dc/react-native-view-pager](https://github.com
 
 * **images**: array, contains image urls
 * **initialPage**, **pageMargin**, **onPageSelected**, **onPageScrollStateChanged**, **onPageScroll**: inherited from **[@ldn0x7dc/react-native-view-pager](https://github.com/ldn0x7dc/react-native-view-pager)**. Check the link for more details.
-* **onSingleTapConfirmed**: Called after when user single taped( not a double tap)
-* **onGalleryStateChanged**: function
+* **onSingleTapConfirmed**: Called after user single taped( not a double tap)
+* **onGalleryStateChanged**: function. (idle) => {}.
 
-
-​	(idle) => {}.
 
 
 
@@ -62,7 +60,7 @@ It's a common practice to float a comment box or like button above the image. Th
 - onSingleTapConfirmed(): a good time for you to display the responding floating view. 
 - onGalleryStateChanged(idle): If *idle* is false, it's a good time for your to hide any floating views.
 
-Check the Demo project a simple demonstration.
+Check the Demo project for a simple demonstration.
 
 
 
