@@ -237,6 +237,7 @@ export default class Gallery extends Component {
   renderPage(pageData, pageId, layout) {
     return (
       <Image
+        {...this.props}
         ref={this.onImageRef.bind(this, pageId)}
         key={'innerImage#' + pageId}
         style={{width: layout.width, height: layout.height}}
