@@ -235,9 +235,16 @@ export default class Gallery extends Component {
   }
 
   renderPage(pageData, pageId, layout) {
+    const { onViewTransformed, onTransformGestureReleased, ...other } = props;
     return (
       <Image
-        {...this.props}
+        {...other}
+        onViewTransformed={((transform) => {
+           onViewTransformed && onViewTransformed(transform, pageId);
+        }).bind(this)}
+        onTransformGestureReleased={((transform) => {
+           onTransformGestureReleased && onTransformGestureReleased(transform, pageId);
+        }).bind(this)}
         ref={this.onImageRef.bind(this, pageId)}
         key={'innerImage#' + pageId}
         style={{width: layout.width, height: layout.height}}
