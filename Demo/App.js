@@ -35,35 +35,45 @@ export default class App extends Component {
     }
 
     return (
-      <Modal
-        visible={true}
-      >
-        <View style={{flex: 1}}>
-          <Gallery
-            style={{flex: 1, backgroundColor: 'black'}}
-            initialPage={1}
-            pageMargin={10}
-            images={[
+
+      <View style={{flex: 1}}>
+
+        <View style={{flex: 1, backgroundColor: 'red'}}/>
+        <View style={{flex: 1, backgroundColor: 'blue'}}/>
+        <View style={{flex: 1, backgroundColor: 'green'}}/>
+
+        <Modal
+          transparent={true}
+          visible={true} >
+          <View style={{flex: 1}}>
+            <Gallery
+              style={{flex: 1, backgroundColor: 'transparent'}}
+              initialPage={1}
+              pageMargin={10}
+              images={[
           'http://p10.qhimg.com/t019e9cf51692f735be.jpg',
           'http://ww2.sinaimg.cn/mw690/714a59a7tw1dxqkkg0cwlj.jpg',
           'http://www.bz55.com/uploads/allimg/150122/139-150122145421.jpg'
         ]}
-            onSingleTapConfirmed={() => {
+              onSingleTapConfirmed={() => {
           this.toggleCommentBox();
         }}
-            onGalleryStateChanged={(idle) => {
+              onGalleryStateChanged={(idle) => {
           if(!idle) {
             this.hideCommentBox();
           }
         }}
-            onPageSelected={(page) => {
+              onPageSelected={(page) => {
            this.setState({page});
         }}
-          />
+            />
 
-          {commentBox}
-        </View>
-      </Modal>
+            {commentBox}
+          </View>
+        </Modal>
+      </View>
+
+
     );
   }
 
