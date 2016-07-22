@@ -1,6 +1,6 @@
 {
   "name": "react-native-gallery",
-  "version": "0.0.15",
+  "version": "0.0.16",
   "description": "",
   "main": "library/Gallery.js",
   "scripts": {
