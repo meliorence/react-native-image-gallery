@@ -235,7 +235,7 @@ export default class Gallery extends Component {
   }
 
   renderPage(pageData, pageId, layout) {
-    const { onViewTransformed, onTransformGestureReleased, ...other } = props;
+    const { onViewTransformed, onTransformGestureReleased, ...other } = this.props;
     return (
       <Image
         {...other}
