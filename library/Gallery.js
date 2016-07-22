@@ -37,8 +37,8 @@ export default class Gallery extends Component {
 
   componentWillMount() {
     function onResponderReleaseOrTerminate(evt, gestureState) {
-      if(this.activeResponder) {
-        if(this.activeResponder === this.viewPagerResponder
+      if (this.activeResponder) {
+        if (this.activeResponder === this.viewPagerResponder
           && !this.shouldScrollViewPager(evt, gestureState)
           && Math.abs(gestureState.vx) > 0.5) {
           this.activeResponder.onEnd(evt, gestureState, true);
@@ -68,17 +68,17 @@ export default class Gallery extends Component {
           }
           this.props.onGalleryStateChanged && this.props.onGalleryStateChanged(false);
         }
-        if(this.activeResponder === this.viewPagerResponder) {
+        if (this.activeResponder === this.viewPagerResponder) {
           const dx = gestureState.moveX - gestureState.previousMoveX;
           const offset = this.getViewPagerInstance().getScrollOffsetFromCurrentPage();
-          if(dx > 0 && offset > 0 && !this.shouldScrollViewPager(evt, gestureState)) {
-            if(dx > offset) { // active image responder
+          if (dx > 0 && offset > 0 && !this.shouldScrollViewPager(evt, gestureState)) {
+            if (dx > offset) { // active image responder
               this.getViewPagerInstance().scrollByOffset(offset);
               gestureState.moveX -= offset;
               this.activeImageResponder(evt, gestureState);
             }
-          } else if(dx < 0 && offset < 0 && !this.shouldScrollViewPager(evt, gestureState)) {
-            if(dx < offset) { // active image responder
+          } else if (dx < 0 && offset < 0 && !this.shouldScrollViewPager(evt, gestureState)) {
+            if (dx < offset) { // active image responder
               this.getViewPagerInstance().scrollByOffset(offset);
               gestureState.moveX -= offset;
               this.activeImageResponder(evt, gestureState);
@@ -89,6 +89,7 @@ export default class Gallery extends Component {
       },
       onResponderRelease: onResponderReleaseOrTerminate.bind(this),
       onResponderTerminate: onResponderReleaseOrTerminate.bind(this),
+      onResponderTerminationRequest: (evt, gestureState) => false, //Do not allow parent view to intercept gesture
       onResponderSingleTapConfirmed: (evt, gestureState) => {
         this.props.onSingleTapConfirmed && this.props.onSingleTapConfirmed(this.currentPage);
       }
@@ -177,12 +178,12 @@ export default class Gallery extends Component {
     let gestureResponder = this.gestureResponder;
 
     let images = this.props.images;
-    if(!images) {
+    if (!images) {
       images = [];
     }
     this.pageCount = images.length;
 
-    if(this.pageCount <= 0) {
+    if (this.pageCount <= 0) {
       gestureResponder = {};
     }
 
@@ -207,7 +208,7 @@ export default class Gallery extends Component {
   }
 
   onPageScrollStateChanged(state) {
-    if(state === 'idle') {
+    if (state === 'idle') {
       this.resetHistoryImageTransform();
     }
     this.props.onPageScrollStateChanged && this.props.onPageScrollStateChanged(state);
