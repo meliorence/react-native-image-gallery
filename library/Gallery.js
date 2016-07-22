@@ -24,28 +24,15 @@ export default class Gallery extends Component {
     onGalleryStateChanged: PropTypes.func
   };
 
+  imageRefs = new Map();
+  activeResponder = undefined;
+  firstMove = true;
+  currentPage = 0;
+  pageCount = 0;
+  gestureResponder = undefined;
+
   constructor(props) {
     super(props);
-
-    this.imageRefs = new Map();
-    this.activeResponder;
-    this.activeGesture = false;
-    this.firstMove = true;
-    this.currentPage = 0;
-    this.pageCount = 0;
-    this.firstDx = 0;
-  }
-
-  resetHistoryImageTransform() {
-    let transformer = this.getImageTransformer(this.currentPage + 1);
-    if (transformer) {
-      transformer.forceUpdateTransform({scale: 1, translateX: 0, translateY: 0});
-    }
-
-    transformer = this.getImageTransformer(this.currentPage - 1);
-    if (transformer) {
-      transformer.forceUpdateTransform({scale: 1, translateX: 0, translateY: 0});
-    }
   }
 
   componentWillMount() {
@@ -62,7 +49,6 @@ export default class Gallery extends Component {
         this.activeResponder = null;
       }
       this.firstMove = true;
-      this.firstDx = 0;
       this.props.onGalleryStateChanged && this.props.onGalleryStateChanged(true);
     }
 
@@ -84,18 +70,17 @@ export default class Gallery extends Component {
         }
         if(this.activeResponder === this.viewPagerResponder) {
           const dx = gestureState.moveX - gestureState.previousMoveX;
-          if(dx > 0 && this.firstDx < 0 && !this.shouldScrollViewPager(evt, gestureState)) {
-            const offset = this.getViewPagerInstance().getScrollOffsetFromCurrentPage();
-            if(dx > offset) {
+          const offset = this.getViewPagerInstance().getScrollOffsetFromCurrentPage();
+          if(dx > 0 && offset > 0 && !this.shouldScrollViewPager(evt, gestureState)) {
+            if(dx > offset) { // active image responder
               this.getViewPagerInstance().scrollByOffset(offset);
               gestureState.moveX -= offset;
               this.activeImageResponder(evt, gestureState);
             }
-          } else if(dx < 0 && this.firstDx > 0 && !this.shouldScrollViewPager(evt, gestureState)) {
-            const offset = this.getViewPagerInstance().getScrollOffsetFromCurrentPage();
-            if(dx < offset) {
+          } else if(dx < 0 && offset < 0 && !this.shouldScrollViewPager(evt, gestureState)) {
+            if(dx < offset) { // active image responder
               this.getViewPagerInstance().scrollByOffset(offset);
-              gestureState.moveX += offset;
+              gestureState.moveX -= offset;
               this.activeImageResponder(evt, gestureState);
             }
           }
@@ -143,11 +128,9 @@ export default class Gallery extends Component {
     const dx = gestureState.moveX - gestureState.previousMoveX;
 
     if (dx > 0 && space.left <= 0 && this.currentPage > 0) {
-      this.firstDx = dx;
       return true;
     }
     if (dx < 0 && space.right <= 0 && this.currentPage < this.pageCount - 1) {
-      this.firstDx = dx
       return true;
     }
     return false;
@@ -245,14 +228,24 @@ export default class Gallery extends Component {
         onTransformGestureReleased={((transform) => {
            onTransformGestureReleased && onTransformGestureReleased(transform, pageId);
         }).bind(this)}
-        ref={this.onImageRef.bind(this, pageId)}
+        ref={((ref) => {
+           this.imageRefs.set(pageId, ref);
+        }).bind(this)}
         key={'innerImage#' + pageId}
         style={{width: layout.width, height: layout.height}}
         source={{uri: pageData}}/>
     );
   }
 
-  onImageRef(pageId, ref) {
-    this.imageRefs.set(pageId, ref);
+  resetHistoryImageTransform() {
+    let transformer = this.getImageTransformer(this.currentPage + 1);
+    if (transformer) {
+      transformer.forceUpdateTransform({scale: 1, translateX: 0, translateY: 0});
+    }
+
+    transformer = this.getImageTransformer(this.currentPage - 1);
+    if (transformer) {
+      transformer.forceUpdateTransform({scale: 1, translateX: 0, translateY: 0});
+    }
   }
 }
