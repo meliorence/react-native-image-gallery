@@ -33,6 +33,10 @@ export default class Gallery extends Component {
 
   constructor(props) {
     super(props);
+    this.state = {
+      imagesLoaded: []
+    };
+    this.setImageLoaded = this.setImageLoaded.bind(this);
   }
 
   componentWillMount() {
@@ -118,6 +122,14 @@ export default class Gallery extends Component {
         this.getCurrentImageTransformer().onResponderRelease(evt, gestureState);
       }
     }
+  }
+
+  componentDidMount () {
+    this._isMounted = true;
+  }
+
+  componentWillUnmount () {
+    this._isMounted = false;
   }
 
   shouldScrollViewPager(evt, gestureState) {
@@ -218,11 +230,26 @@ export default class Gallery extends Component {
     this.props.onPageScroll && this.props.onPageScroll(e);
   }
 
+  setImageLoaded (pageId) {
+    if (!this._isMounted) {
+      return;
+    }
+    this.setState({
+      imagesLoaded: {
+         ...this.state.imagesLoaded,
+        [pageId]: true
+      }
+    });
+  };
+
   renderPage(pageData, pageId, layout) {
-    const { onViewTransformed, onTransformGestureReleased, ...other } = this.props;
+    const { onViewTransformed, onTransformGestureReleased, loader, ...other } = this.props;
+    const loaded = this.state.imagesLoaded[pageId] && this.state.imagesLoaded[pageId] === true;
+    const loadingView = !loaded && loader ? loader : false;
     return (
       <Image
         {...other}
+        onLoad={() => this.setImageLoaded(pageId)}
         onViewTransformed={((transform) => {
            onViewTransformed && onViewTransformed(transform, pageId);
         }).bind(this)}
@@ -234,7 +261,9 @@ export default class Gallery extends Component {
         }).bind(this)}
         key={'innerImage#' + pageId}
         style={{width: layout.width, height: layout.height}}
-        source={{uri: pageData}}/>
+        source={{uri: pageData}}>
+          { loadingView }
+        </Image>
     );
   }
 
