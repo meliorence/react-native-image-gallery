@@ -1,6 +1,6 @@
 # react-native-gallery
 
-This used to be a fork of [ldn0x7dc/react-native-gallery](https://github.com/ldn0x7dc/react-native-gallery) but since the author has stopped maintaining it, here's our own repo. Props to him for his work !
+>This used to be a fork of [ldn0x7dc/react-native-gallery](https://github.com/ldn0x7dc/react-native-gallery) but since the author has stopped maintaining it, here's our own repo. Props to him for his work !
 
 A pure JavaScript image gallery component for react-native apps with common gestures like pan, pinch and doubleTap, supporting both iOS and Android.
 
@@ -10,6 +10,8 @@ This component aims to be (one of) the best image viewer for react-native apps. 
 * Responder switch: the gesture responder switch is more flexible than any other component, that is, the scrollable container and the wrapped image children perform well in acquiring and releasing gesture responder from/to each other.
 
 This component works on react-native **0.28+**.
+
+You can try this example live in **Archriss' showcase app** on [Android](https://play.google.com/store/apps/details?id=fr.archriss.demo.app) and [iOS](https://itunes.apple.com/lu/app/archriss-presentation-mobile/id1180954376?mt=8).
 
 ![react-native-gallery](https://media.giphy.com/media/3o7bugPvJyqYWz9bK8/giphy.gif)
 
