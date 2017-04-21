@@ -1,15 +1,17 @@
 # react-native-gallery
 
+This used to be a fork of [ldn0x7dc/react-native-gallery](https://github.com/ldn0x7dc/react-native-gallery) but since the author has stopped maintaining it, here's our own repo. Props to him for his work !
+
 A pure JavaScript image gallery component for react-native apps with common gestures like pan, pinch and doubleTap, supporting both iOS and Android.
 
-This component aims to be (one of ) the best image viewer for react-native apps. Comparing with other gallery alike components, this one should be more elegant in following aspects: (mimics iOS system photo album app)
+This component aims to be (one of) the best image viewer for react-native apps. Comparing with other gallery alike components, this one should be more elegant in following aspects: (mimics iOS system photo album app).
 
 * Gesture handle: besides common pan, pinch and doubleTap, this component does well in targeting foucs point( or pivot) when zoom-in and zoom-out.
 * Responder switch: the gesture responder switch is more flexible than any other component, that is, the scrollable container and the wrapped image children perform well in acquiring and releasing gesture responder from/to each other.
 
 This component works on react-native **0.28+**.
 
-![](Demo/demo.gif)
+![react-native-gallery](https://media.giphy.com/media/3o7bugPvJyqYWz9bK8/giphy.gif)
 
 ## Install
 
@@ -28,9 +30,9 @@ import Gallery from 'react-native-gallery';
         style={{flex: 1, backgroundColor: 'black'}}
         images={[
           { source: require('yourApp/image.png'), dimensions: { width: 150, height: 150 } },
-          { source: { uri: 'http://p10.qhimg.com/t019e9cf51692f735be.jpg } },
-          { source: { uri: 'http://ww2.sinaimg.cn/mw690/714a59a7tw1dxqkkg0cwlj.jpg } },
-          { source: { uri: 'http://www.bz55.com/uploads/allimg/150122/139-150122145421.jpg } }
+          { source: { uri: 'http://p10.qhimg.com/t019e9cf51692f735be.jpg' } },
+          { source: { uri: 'http://ww2.sinaimg.cn/mw690/714a59a7tw1dxqkkg0cwlj.jpg' } },
+          { source: { uri: 'http://www.bz55.com/uploads/allimg/150122/139-150122145421.jpg' } }
         ]}
       />
     );
