@@ -1,21 +1,21 @@
 {
-  "name": "react-native-gallery",
-  "version": "0.1.0",
-  "description": "",
+  "name": "react-native-image-gallery",
+  "version": "1.0.0",
+  "description": "Pure JavaScript image gallery component for iOS and Android",
   "main": "library/Gallery.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ldn0x7dc/react-native-gallery.git"
+    "url": "git+https://github.com/archriss/react-native-image-gallery.git"
   },
-  "author": "",
+  "author": "Archriss",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/ldn0x7dc/react-native-gallery/issues"
+    "url": "https://github.com/archriss/react-native-image-gallery/issues"
   },
-  "homepage": "https://github.com/ldn0x7dc/react-native-gallery#readme",
+  "homepage": "https://github.com/archriss/react-native-image-gallery#readme",
   "dependencies": {
     "react-native-transformable-image": "0.0.18",
     "@ldn0x7dc/react-native-view-pager": "0.0.9",
