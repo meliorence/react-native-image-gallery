@@ -51,6 +51,7 @@ This component utilizes **[@ldn0x7dc/react-native-view-pager](https://github.com
 * **initialPage**, **pageMargin**, **onPageSelected**, **onPageScrollStateChanged**, **onPageScroll**: inherited from **[@ldn0x7dc/react-native-view-pager](https://github.com/ldn0x7dc/react-native-view-pager)**. Check the link for more details.
 * **onSingleTapConfirmed**: Called after user single taped( not a double tap)
 * **onGalleryStateChanged**: function. (idle) => {}.
+* **onLongPress**: (gestureState) => {}
 * **loader**: React component that will be displayed before each image has been loaded. For instance, you could use `ActivityIndicator`.
 
 ### Add your custom views above image
