@@ -15,7 +15,8 @@ export default class Gallery extends Component {
         onPageScrollStateChanged: PropTypes.func,
         onPageScroll: PropTypes.func,
         onSingleTapConfirmed: PropTypes.func,
-        onGalleryStateChanged: PropTypes.func
+        onGalleryStateChanged: PropTypes.func,
+        onLongPress: PropTypes.func
     };
 
     imageRefs = new Map();
@@ -112,12 +113,19 @@ export default class Gallery extends Component {
         this.imageResponder = {
             onStart: (evt, gestureState) => {
                 this.getCurrentImageTransformer().onResponderGrant(evt, gestureState);
+                if (this.props.onLongPress) {
+                    this._longPressTimeout = setTimeout(() => {
+                        this.props.onLongPress(gestureState);
+                    }, 600);
+                }
             },
             onMove: (evt, gestureState) => {
                 this.getCurrentImageTransformer().onResponderMove(evt, gestureState);
+                clearTimeout(this._longPressTimeout);
             },
             onEnd: (evt, gestureState) => {
                 this.getCurrentImageTransformer().onResponderRelease(evt, gestureState);
+                clearTimeout(this._longPressTimeout);
             }
         };
     }
