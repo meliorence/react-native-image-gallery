@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
-import { View } from 'react-native';
-import {createResponder} from 'react-native-gesture-responder';
-import Image from 'react-native-transformable-image';
+import { View, Image } from 'react-native';
+import { createResponder } from 'react-native-gesture-responder';
+import TransformableImage from 'react-native-transformable-image';
 import ViewPager from '@ldn0x7dc/react-native-view-pager';
 
 export default class Gallery extends Component {
@@ -29,7 +29,8 @@ export default class Gallery extends Component {
     constructor (props) {
         super(props);
         this.state = {
-            imagesLoaded: []
+            imagesLoaded: [],
+            imagesDimensions: []
         };
         this.setImageLoaded = this.setImageLoaded.bind(this);
         this.renderPage = this.renderPage.bind(this);
@@ -192,6 +193,93 @@ export default class Gallery extends Component {
         return this.refs['galleryViewPager'];
     }
 
+    onPageSelected (page) {
+        this.currentPage = page;
+        this.props.onPageSelected && this.props.onPageSelected(page);
+    }
+
+    onPageScrollStateChanged (state) {
+        if (state === 'idle') {
+            this.resetHistoryImageTransform();
+        }
+        this.props.onPageScrollStateChanged && this.props.onPageScrollStateChanged(state);
+    }
+
+    onPageScroll (e) {
+        this.props.onPageScroll && this.props.onPageScroll(e);
+    }
+
+    onLoad (pageId, source) {
+        if (!this._isMounted) {
+            return;
+        }
+        if (source.uri) {
+            Image.getSize(
+                source.uri,
+                (width, height) => {
+                    this.setImageLoaded(pageId, { width, height });
+                },
+                () => this.setImageLoaded(pageId, false)
+            );
+        } else {
+            this.setImageLoaded(pageId, false);
+        }
+    };
+
+    setImageLoaded (pageId, dimensions) {
+        this.setState({
+            imagesLoaded: {
+                ...this.state.imagesLoaded,
+                [pageId]: true
+            }
+        });
+        if (dimensions) {
+            this.setState({
+                imagesDimensions: {
+                    ...this.state.imagesDimensions,
+                    [pageId]: dimensions
+                }
+            });
+        }
+    }
+
+    renderPage (pageData, pageId, layout) {
+        const { onViewTransformed, onTransformGestureReleased, loader, ...other } = this.props;
+        const loaded = this.state.imagesLoaded[pageId] && this.state.imagesLoaded[pageId] === true;
+        const loadingView = !loaded && loader ? loader : false;
+        return (
+            <TransformableImage
+              {...other}
+              onLoad={(evt) => this.onLoad(pageId, pageData.source)}
+              onViewTransformed={((transform) => {
+                  onViewTransformed && onViewTransformed(transform, pageId);
+              })}
+              onTransformGestureReleased={((transform) => {
+                  onTransformGestureReleased && onTransformGestureReleased(transform, pageId);
+              })}
+              ref={((ref) => { this.imageRefs.set(pageId, ref); })}
+              key={'innerImage#' + pageId}
+              style={{width: layout.width, height: layout.height}}
+              source={pageData.source}
+              pixels={this.state.imagesDimensions[pageId] || pageData.dimensions || pageData.dimensions || {}}
+            >
+                { loadingView }
+            </TransformableImage>
+        );
+    }
+
+    resetHistoryImageTransform () {
+        let transformer = this.getImageTransformer(this.currentPage + 1);
+        if (transformer) {
+            transformer.forceUpdateTransform({scale: 1, translateX: 0, translateY: 0});
+        }
+
+        transformer = this.getImageTransformer(this.currentPage - 1);
+        if (transformer) {
+            transformer.forceUpdateTransform({scale: 1, translateX: 0, translateY: 0});
+        }
+    }
+
     render () {
         let gestureResponder = this.gestureResponder;
 
@@ -218,70 +306,5 @@ export default class Gallery extends Component {
               onPageScroll={this.onPageScroll}
             />
         );
-    }
-
-    onPageSelected (page) {
-        this.currentPage = page;
-        this.props.onPageSelected && this.props.onPageSelected(page);
-    }
-
-    onPageScrollStateChanged (state) {
-        if (state === 'idle') {
-            this.resetHistoryImageTransform();
-        }
-        this.props.onPageScrollStateChanged && this.props.onPageScrollStateChanged(state);
-    }
-
-    onPageScroll (e) {
-        this.props.onPageScroll && this.props.onPageScroll(e);
-    }
-
-    setImageLoaded (pageId) {
-        if (!this._isMounted) {
-            return;
-        }
-        this.setState({
-            imagesLoaded: {
-                ...this.state.imagesLoaded,
-                [pageId]: true
-            }
-        });
-    };
-
-    renderPage (pageData, pageId, layout) {
-        const { onViewTransformed, onTransformGestureReleased, loader, ...other } = this.props;
-        const loaded = this.state.imagesLoaded[pageId] && this.state.imagesLoaded[pageId] === true;
-        const loadingView = !loaded && loader ? loader : false;
-        return (
-            <Image
-              {...other}
-              onLoad={() => this.setImageLoaded(pageId)}
-              onViewTransformed={((transform) => {
-                  onViewTransformed && onViewTransformed(transform, pageId);
-              })}
-              onTransformGestureReleased={((transform) => {
-                  onTransformGestureReleased && onTransformGestureReleased(transform, pageId);
-              })}
-              ref={((ref) => { this.imageRefs.set(pageId, ref); })}
-              key={'innerImage#' + pageId}
-              style={{width: layout.width, height: layout.height}}
-              source={pageData.source}
-              pixels={pageData.dimensions || {}}
-            >
-                { loadingView }
-            </Image>
-        );
-    }
-
-    resetHistoryImageTransform () {
-        let transformer = this.getImageTransformer(this.currentPage + 1);
-        if (transformer) {
-            transformer.forceUpdateTransform({scale: 1, translateX: 0, translateY: 0});
-        }
-
-        transformer = this.getImageTransformer(this.currentPage - 1);
-        if (transformer) {
-            transformer.forceUpdateTransform({scale: 1, translateX: 0, translateY: 0});
-        }
     }
 }
