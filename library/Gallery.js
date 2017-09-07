@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { View, Image } from 'react-native';
 import { createResponder } from 'react-native-gesture-responder';
 import TransformableImage from 'react-native-transformable-image';
-import ViewPager from '@ldn0x7dc/react-native-view-pager';
+import ViewPager from './ViewPager';
 
 export default class Gallery extends Component {
 
