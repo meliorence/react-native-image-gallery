@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { View, Image } from 'react-native';
 import { createResponder } from 'react-native-gesture-responder';
-import TransformableImage from 'react-native-transformable-image';
+import TransformableImage from './TransformableImage';
 import ViewPager from './ViewPager';
 
 export default class Gallery extends Component {
@@ -16,7 +16,16 @@ export default class Gallery extends Component {
         onPageScroll: PropTypes.func,
         onSingleTapConfirmed: PropTypes.func,
         onGalleryStateChanged: PropTypes.func,
-        onLongPress: PropTypes.func
+        onLongPress: PropTypes.func,
+        initialListSize: PropTypes.number,
+        removeClippedSubviews: PropTypes.bool,
+        imageComponent: PropTypes.func,
+    };
+
+    static defaultProps = {
+      initialListSize: 10,
+      removeClippedSubviews: true,
+      imageComponent: undefined,
     };
 
     imageRefs = new Map();
@@ -29,10 +38,8 @@ export default class Gallery extends Component {
     constructor (props) {
         super(props);
         this.state = {
-            imagesLoaded: [],
             imagesDimensions: []
         };
-        this.setImageLoaded = this.setImageLoaded.bind(this);
         this.renderPage = this.renderPage.bind(this);
         this.onPageSelected = this.onPageSelected.bind(this);
         this.onPageScrollStateChanged = this.onPageScrollStateChanged.bind(this);
@@ -209,48 +216,12 @@ export default class Gallery extends Component {
         this.props.onPageScroll && this.props.onPageScroll(e);
     }
 
-    onLoad (pageId, source) {
-        if (!this._isMounted) {
-            return;
-        }
-        if (source.uri) {
-            Image.getSize(
-                source.uri,
-                (width, height) => {
-                    this.setImageLoaded(pageId, { width, height });
-                },
-                () => this.setImageLoaded(pageId, false)
-            );
-        } else {
-            this.setImageLoaded(pageId, false);
-        }
-    };
-
-    setImageLoaded (pageId, dimensions) {
-        this.setState({
-            imagesLoaded: {
-                ...this.state.imagesLoaded,
-                [pageId]: true
-            }
-        });
-        if (dimensions) {
-            this.setState({
-                imagesDimensions: {
-                    ...this.state.imagesDimensions,
-                    [pageId]: dimensions
-                }
-            });
-        }
-    }
-
     renderPage (pageData, pageId, layout) {
-        const { onViewTransformed, onTransformGestureReleased, loader, ...other } = this.props;
-        const loaded = this.state.imagesLoaded[pageId] && this.state.imagesLoaded[pageId] === true;
-        const loadingView = !loaded && loader ? loader : false;
+      console.log(`Rendering page: ${pageId}`);
+        const { onViewTransformed, onTransformGestureReleased, ...other } = this.props;
         return (
             <TransformableImage
               {...other}
-              onLoad={(evt) => this.onLoad(pageId, pageData.source)}
               onViewTransformed={((transform) => {
                   onViewTransformed && onViewTransformed(transform, pageId);
               })}
@@ -261,10 +232,8 @@ export default class Gallery extends Component {
               key={'innerImage#' + pageId}
               style={{width: layout.width, height: layout.height}}
               source={pageData.source}
-              pixels={this.state.imagesDimensions[pageId] || pageData.dimensions || pageData.dimensions || {}}
-            >
-                { loadingView }
-            </TransformableImage>
+              pixels={ pageData.dimensions || pageData.source.dimensions || {}}
+            />
         );
     }
 
@@ -304,6 +273,8 @@ export default class Gallery extends Component {
               onPageSelected={this.onPageSelected}
               onPageScrollStateChanged={this.onPageScrollStateChanged}
               onPageScroll={this.onPageScroll}
+              removeClippedSubviews={ this.props.removeClippedSubviews }
+              initialListSize={ this.props.initialListSize }
             />
         );
     }

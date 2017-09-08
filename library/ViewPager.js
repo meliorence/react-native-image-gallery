@@ -21,6 +21,8 @@ export default class ViewPager extends Component {
     scrollEnabled: PropTypes.bool,
     renderPage: PropTypes.func,
     pageDataArray: PropTypes.array,
+    initialListSize: PropTypes.number,
+    removeClippedSubviews: PropTypes.bool,
 
     onPageSelected: PropTypes.func,
     onPageScrollStateChanged: PropTypes.func,
@@ -32,6 +34,8 @@ export default class ViewPager extends Component {
     pageMargin: 0,
     scrollEnabled: true,
     pageDataArray: [],
+    initialListSize: 10,
+    removeClippedSubviews: true,
   };
 
   pageCount = 0; //Initialize to avoid undefined error
@@ -132,6 +136,8 @@ export default class ViewPager extends Component {
           dataSource={dataSource}
           renderRow={this.renderRow.bind(this)}
           onLayout={this.onLayout.bind(this)}
+          removeClippedSubviews={ this.props.removeClippedSubviews }
+          initialListSize={ this.props.initialListSize }
         />
       </View>
     );
