@@ -37,9 +37,7 @@ export default class Gallery extends Component {
 
     constructor (props) {
         super(props);
-        this.state = {
-            imagesDimensions: []
-        };
+
         this.renderPage = this.renderPage.bind(this);
         this.onPageSelected = this.onPageSelected.bind(this);
         this.onPageScrollStateChanged = this.onPageScrollStateChanged.bind(this);
