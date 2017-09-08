@@ -5,7 +5,7 @@ import { Image } from 'react-native';
 
 import ViewTransformer from 'react-native-view-transformer';
 
-let DEV = true;
+let DEV = false;
 
 export default class TransformableImage extends Component {
 

@@ -217,7 +217,6 @@ export default class Gallery extends Component {
     }
 
     renderPage (pageData, pageId, layout) {
-      console.log(`Rendering page: ${pageId}`);
         const { onViewTransformed, onTransformGestureReleased, ...other } = this.props;
         return (
             <TransformableImage
