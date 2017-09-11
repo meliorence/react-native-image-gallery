@@ -254,7 +254,7 @@ export default class Gallery extends PureComponent {
     }
 
     render () {
-        DEVE && console.log('Gallery render');
+        DEV && console.log('Gallery render');
         let gestureResponder = this.gestureResponder;
 
         let images = this.props.images;
