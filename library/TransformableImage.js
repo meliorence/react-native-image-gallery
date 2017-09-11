@@ -1,24 +1,26 @@
 'use strict';
 
-import React, { Component, PropTypes } from 'react';
+import React, { PureComponent, PropTypes } from 'react';
 import { Image } from 'react-native';
 
 import ViewTransformer from 'react-native-view-transformer';
 
-let DEV = false;
+const DEV = false;
 
-export default class TransformableImage extends Component {
+export default class TransformableImage extends PureComponent {
 
   static enableDebug() {
     DEV = true;
   }
 
   static propTypes = {
-    pixels: PropTypes.shape({
-      width: PropTypes.number,
-      height: PropTypes.number,
+    source: PropTypes.shape({
+        uri: PropTypes.string.isRequired,
+        dimensions: PropTypes.shape({
+            width: PropTypes.number,
+            height: PropTypes.number,
+        }),
     }),
-
     enableTransform: PropTypes.bool,
     enableScale: PropTypes.bool,
     enableTranslate: PropTypes.bool,
@@ -40,49 +42,48 @@ export default class TransformableImage extends Component {
     super(props);
 
     this.state = {
-      width: 0,
-      height: 0,
+      viewWidth: 0,
+      viewHeight: 0,
 
       imageLoaded: false,
-      pixels: undefined,
+      imageDimensions: props.source.dimensions,
       keyAcumulator: 1
     };
   }
 
   componentWillMount() {
-    if (!this.props.pixels) {
+    if (!this.state.imageDimensions) {
       this.getImageSize(this.props.source);
     }
   }
 
   componentWillReceiveProps(nextProps) {
+    DEV && console.log('TransformableImage: componentWillReceiveProps');
     if (!sameSource(this.props.source, nextProps.source)) {
-      //image source changed, clear last image's pixels info if any
-      this.setState({pixels: undefined, keyAcumulator: this.state.keyAcumulator + 1})
-      this.getImageSize(nextProps.source);
+      DEV && console.log('TransformableImage: componentWillReceiveProps - different source');
+      //image source changed, clear last image's imageDimensions info if any
+      this.setState({imageDimensions: props.source.dimensions, keyAcumulator: this.state.keyAcumulator + 1})
+      if (!props.source.dimensions) { // if we don't have image dimensions provided in source
+        this.getImageSize(nextProps.source);
+      }
     }
   }
 
   render() {
     let maxScale = 1;
     let contentAspectRatio = undefined;
-    let width, height; //pixels
+    let width, height; //imageDimensions
 
-    if (this.props.pixels) {
-      //if provided via props
-      width = this.props.pixels.width;
-      height = this.props.pixels.height;
-    } else if (this.state.pixels) {
-      //if got using Image.getSize()
-      width = this.state.pixels.width;
-      height = this.state.pixels.height;
+    if (this.state.imageDimensions) {
+      width = this.state.imageDimensions.width;
+      height = this.state.imageDimensions.height;
     }
 
     if (width && height) {
         DEV && console.log(`TransformableImage: (${width}, ${height})`)
       contentAspectRatio = width / height;
-      if (this.state.width && this.state.height) {
-        maxScale = Math.max(width / this.state.width, height / this.state.height);
+      if (this.state.viewWidth && this.state.viewHeight) {
+        maxScale = Math.max(width / this.state.viewWidth, height / this.state.viewHeight);
         maxScale = Math.max(1, maxScale);
       }
     }
@@ -139,10 +140,10 @@ export default class TransformableImage extends Component {
 
   onLayout(e) {
     let {width, height} = e.nativeEvent.layout;
-    if (this.state.width !== width || this.state.height !== height) {
+    if (this.state.viewWidth !== width || this.state.viewHeight !== height) {
       this.setState({
-        width: width,
-        height: height
+        viewWidth: width,
+        viewHeight: height
       });
     }
   }
@@ -159,10 +160,10 @@ export default class TransformableImage extends Component {
           (width, height) => {
             DEV && console.log('getImageSize...width=' + width + ', height=' + height);
             if (width && height) {
-              if(this.state.pixels && this.state.pixels.width === width && this.state.pixels.height === height) {
+              if(this.state.imageDimensions && this.state.imageDimensions.width === width && this.state.imageDimensions.height === height) {
                 //no need to update state
               } else {
-                this.setState({pixels: {width, height}});
+                this.setState({imageDimensions: {width, height}});
               }
             }
           },
@@ -170,7 +171,7 @@ export default class TransformableImage extends Component {
             console.error('getImageSize...error=' + JSON.stringify(error) + ', source=' + JSON.stringify(source));
           })
       } else {
-        console.warn('getImageSize...please provide pixels prop for local images');
+        console.warn('getImageSize...please provide imageDimensions prop for local images');
       }
     } else {
       console.warn('getImageSize...Image.getSize function not available before react-native v0.28');

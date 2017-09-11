@@ -1,4 +1,4 @@
-import React, { PropTypes, Component } from 'react';
+import React, { PropTypes, PureComponent } from 'react';
 import {
   View,
   ListView,
@@ -12,7 +12,9 @@ import reactMixin from 'react-mixin';
 
 const MIN_FLING_VELOCITY = 0.5;
 
-export default class ViewPager extends Component {
+const DEV = false;
+
+export default class ViewPager extends PureComponent {
 
   static propTypes = {
     ...View.propTypes,
@@ -144,17 +146,25 @@ export default class ViewPager extends Component {
   }
 
   renderRow(rowData, sectionID, rowID, highlightRow) {
+    DEV && console.log(`ViewPager:renderRow ${rowID}`);
     const {width, height} = this.state;
-    let page = this.props.renderPage(rowData, rowID, {width, height});
+    let page = this.props.renderPage(rowData, rowID);
+
+    const layout = {
+      width: width,
+      height: height,
+      position: 'relative',
+    }
+    const style = page.props.style ?
+    (
+        [page.props.style, layout]
+    )
+    : layout;
 
     let newProps = {
       ...page.props,
       ref: page.ref,
-      style: [page.props.style, {
-        width: width,
-        height: height,
-        position: 'relative',
-      }]
+      style
     };
     const element = React.createElement(page.type, newProps);
 

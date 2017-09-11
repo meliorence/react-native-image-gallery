@@ -1,14 +1,24 @@
-import React, { Component, PropTypes } from 'react';
+import React, { PureComponent, PropTypes } from 'react';
 import { View, Image } from 'react-native';
 import { createResponder } from 'react-native-gesture-responder';
 import TransformableImage from './TransformableImage';
 import ViewPager from './ViewPager';
 
-export default class Gallery extends Component {
+const DEV = false;
+
+export default class Gallery extends PureComponent {
 
     static propTypes = {
         ...View.propTypes,
-        images: PropTypes.array,
+        images: PropTypes.arrayOf(PropTypes.shape({
+            source: PropTypes.shape({
+                uri: PropTypes.string.isRequired,
+                dimensions: PropTypes.shape({
+                    width: PropTypes.number,
+                    height: PropTypes.number,
+                }),
+            }),
+        })),
         initialPage: PropTypes.number,
         pageMargin: PropTypes.number,
         onPageSelected: PropTypes.func,
@@ -214,11 +224,10 @@ export default class Gallery extends Component {
         this.props.onPageScroll && this.props.onPageScroll(e);
     }
 
-    renderPage (pageData, pageId, layout) {
-        const { onViewTransformed, onTransformGestureReleased, ...other } = this.props;
+    renderPage (pageData, pageId) {
+        const { onViewTransformed, onTransformGestureReleased } = this.props;
         return (
             <TransformableImage
-              {...other}
               onViewTransformed={((transform) => {
                   onViewTransformed && onViewTransformed(transform, pageId);
               })}
@@ -227,9 +236,7 @@ export default class Gallery extends Component {
               })}
               ref={((ref) => { this.imageRefs.set(pageId, ref); })}
               key={'innerImage#' + pageId}
-              style={{width: layout.width, height: layout.height}}
               source={pageData.source}
-              pixels={ pageData.dimensions || pageData.source.dimensions || {}}
             />
         );
     }
@@ -247,6 +254,7 @@ export default class Gallery extends Component {
     }
 
     render () {
+        DEVE && console.log('Gallery render');
         let gestureResponder = this.gestureResponder;
 
         let images = this.props.images;
