@@ -1,6 +1,5 @@
 import React, { PropTypes, PureComponent } from 'react';
-import { View, ListView, Platform } from 'react-native';
-
+import { View, ListView, ViewPropTypes } from 'react-native';
 import Scroller from 'react-native-scroller';
 import { createResponder } from 'react-native-gesture-responder';
 import TimerMixin from 'react-timer-mixin';
@@ -18,7 +17,6 @@ export default class ViewPager extends PureComponent {
         pageDataArray: PropTypes.array,
         initialListSize: PropTypes.number,
         removeClippedSubviews: PropTypes.bool,
-
         onPageSelected: PropTypes.func,
         onPageScrollStateChanged: PropTypes.func,
         onPageScroll: PropTypes.func
@@ -45,13 +43,12 @@ export default class ViewPager extends PureComponent {
 
         this.onLayout = this.onLayout.bind(this);
         this.renderRow = this.renderRow.bind(this);
+        this.onResponderGrant = this.onResponderGrant.bind(this);
+        this.onResponderMove = this.onResponderMove.bind(this);
+        this.onResponderRelease = this.onResponderRelease.bind(this);
 
         const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-        this.state = {
-            width: 0,
-            height: 0,
-            dataSource: ds.cloneWithRows([])
-        };
+        this.state = { width: 0, height: 0, dataSource: ds.cloneWithRows([]) };
 
         this.scroller = new Scroller(true, (dx, dy, scroller) => {
             if (dx === 0 && dy === 0 && scroller.isFinished()) {
@@ -79,10 +76,10 @@ export default class ViewPager extends PureComponent {
     componentWillMount () {
         this.gestureResponder = createResponder({
             onStartShouldSetResponder: (evt, gestureState) => true,
-            onResponderGrant: this.onResponderGrant.bind(this),
-            onResponderMove: this.onResponderMove.bind(this),
-            onResponderRelease: this.onResponderRelease.bind(this),
-            onResponderTerminate: this.onResponderRelease.bind(this)
+            onResponderGrant: this.onResponderGrant,
+            onResponderMove: this.onResponderMove,
+            onResponderRelease: this.onResponderRelease,
+            onResponderTerminate: this.onResponderRelease
         });
     }
 
@@ -222,8 +219,9 @@ export default class ViewPager extends PureComponent {
     }
 
     renderRow (rowData, sectionID, rowID, highlightRow) {
-        const {width, height} = this.state;
-        let page = this.props.renderPage(rowData, rowID);
+        const { width, height } = this.state;
+        const { renderPage, pageMargin } = this.props;
+        let page = renderPage(rowData, rowID);
 
         const layout = { width: width, height: height, position: 'relative' };
         const style = page.props.style ? [page.props.style, layout] : layout;
@@ -231,12 +229,12 @@ export default class ViewPager extends PureComponent {
         let newProps = { ...page.props, ref: page.ref, style };
         const element = React.createElement(page.type, newProps);
 
-        if (this.props.pageMargin > 0 && rowID > 0) {
+        if (pageMargin > 0 && rowID > 0) {
             // Do not using margin style to implement pageMargin.
             // The ListView seems to calculate a wrong width for children views with margin.
             return (
-                <View style={{width: width + this.props.pageMargin, height: height, alignItems: 'flex-end'}}>
-                    {element}
+                <View style={{ width: width + pageMargin, height: height, alignItems: 'flex-end' }}>
+                    { element }
                 </View>
             );
         } else {
@@ -245,9 +243,12 @@ export default class ViewPager extends PureComponent {
     }
 
     render () {
+        const { width, height } = this.state;
+        const { pageDataArray, scrollEnabled, style, removeClippedSubviews, initialListSize, scrollViewStyle } = this.props;
+
         let dataSource = this.state.dataSource;
-        if (this.state.width && this.state.height) {
-            let list = this.props.pageDataArray;
+        if (width && height) {
+            let list = pageDataArray;
             if (!list) {
                 list = [];
             }
@@ -256,14 +257,14 @@ export default class ViewPager extends PureComponent {
         }
 
         let gestureResponder = this.gestureResponder;
-        if (!this.props.scrollEnabled || this.pageCount <= 0) {
+        if (!scrollEnabled || this.pageCount <= 0) {
             gestureResponder = {};
         }
 
         return (
             <View
               {...this.props}
-              style={[this.props.style, {flex: 1}]}
+              style={[style, { flex: 1 }]}
               {...gestureResponder}>
                 <ListView
                   style={{flex: 1}}
@@ -274,8 +275,8 @@ export default class ViewPager extends PureComponent {
                   dataSource={dataSource}
                   renderRow={this.renderRow}
                   onLayout={this.onLayout}
-                  removeClippedSubviews={ this.props.removeClippedSubviews }
-                  initialListSize={ this.props.initialListSize }
+                  removeClippedSubviews={ removeClippedSubviews }
+                  initialListSize={ initialListSize }
               />
             </View>
         );
