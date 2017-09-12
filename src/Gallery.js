@@ -43,15 +43,15 @@ export default class Gallery extends PureComponent {
         this.renderPage = this.renderPage.bind(this);
         this.onPageSelected = this.onPageSelected.bind(this);
         this.onPageScrollStateChanged = this.onPageScrollStateChanged.bind(this);
-        this.onPageScroll = this.onPageScroll.bind(this);
         this.getViewPagerInstance = this.getViewPagerInstance.bind(this);
         this.getCurrentImageTransformer = this.getCurrentImageTransformer.bind(this);
         this.getImageTransformer = this.getImageTransformer.bind(this);
         this.getViewPagerInstance = this.getViewPagerInstance.bind(this);
+        this.activeImageResponder = this.activeImageResponder.bind(this);
     }
 
     componentWillMount () {
-        function onResponderReleaseOrTerminate (evt, gestureState) {
+        let onResponderReleaseOrTerminate = (evt, gestureState) => {
             if (this.activeResponder) {
                 if (this.activeResponder === this.viewPagerResponder &&
                     !this.shouldScrollViewPager(evt, gestureState) &&
@@ -65,16 +65,12 @@ export default class Gallery extends PureComponent {
             }
             this.firstMove = true;
             this.props.onGalleryStateChanged && this.props.onGalleryStateChanged(true);
-        }
+        };
 
         this.gestureResponder = createResponder({
             onStartShouldSetResponderCapture: (evt, gestureState) => true,
-            onStartShouldSetResponder: (evt, gestureState) => {
-                return true;
-            },
-            onResponderGrant: (evt, gestureState) => {
-                this.activeImageResponder(evt, gestureState);
-            },
+            onStartShouldSetResponder: (evt, gestureState) => true,
+            onResponderGrant: this.activeImageResponder,
             onResponderMove: (evt, gestureState) => {
                 if (this.firstMove) {
                     this.firstMove = false;
@@ -102,8 +98,8 @@ export default class Gallery extends PureComponent {
                 }
                 this.activeResponder.onMove(evt, gestureState);
             },
-            onResponderRelease: onResponderReleaseOrTerminate.bind(this),
-            onResponderTerminate: onResponderReleaseOrTerminate.bind(this),
+            onResponderRelease: onResponderReleaseOrTerminate,
+            onResponderTerminate: onResponderReleaseOrTerminate,
             onResponderTerminationRequest: (evt, gestureState) => false, // Do not allow parent view to intercept gesture
             onResponderSingleTapConfirmed: (evt, gestureState) => {
                 this.props.onSingleTapConfirmed && this.props.onSingleTapConfirmed(this.currentPage);
@@ -216,10 +212,6 @@ export default class Gallery extends PureComponent {
         this.props.onPageScrollStateChanged && this.props.onPageScrollStateChanged(state);
     }
 
-    onPageScroll (e) {
-        this.props.onPageScroll && this.props.onPageScroll(e);
-    }
-
     renderPage (pageData, pageId) {
         const { onViewTransformed, onTransformGestureReleased, renderError } = this.props;
         return (
@@ -268,6 +260,7 @@ export default class Gallery extends PureComponent {
             <ViewPager
               {...this.props}
               ref={'galleryViewPager'}
+              scrollViewStyle={this.props.scrollViewStyle}
               scrollEnabled={false}
               renderPage={this.renderPage}
               pageDataArray={images}
