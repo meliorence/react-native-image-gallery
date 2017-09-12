@@ -1,24 +1,13 @@
 import React, { PureComponent, PropTypes } from 'react';
-import { View, Image } from 'react-native';
+import { View } from 'react-native';
 import { createResponder } from 'react-native-gesture-responder';
 import TransformableImage from './TransformableImage';
 import ViewPager from './ViewPager';
 
-const DEV = false;
-
 export default class Gallery extends PureComponent {
-
     static propTypes = {
         ...View.propTypes,
-        images: PropTypes.arrayOf(PropTypes.shape({
-            source: PropTypes.shape({
-                uri: PropTypes.string.isRequired,
-                dimensions: PropTypes.shape({
-                    width: PropTypes.number,
-                    height: PropTypes.number,
-                }),
-            }),
-        })),
+        images: PropTypes.arrayOf(PropTypes.object),
         initialPage: PropTypes.number,
         pageMargin: PropTypes.number,
         onPageSelected: PropTypes.func,
@@ -30,12 +19,13 @@ export default class Gallery extends PureComponent {
         initialListSize: PropTypes.number,
         removeClippedSubviews: PropTypes.bool,
         imageComponent: PropTypes.func,
+        renderError: PropTypes.func
     };
 
     static defaultProps = {
-      initialListSize: 10,
-      removeClippedSubviews: true,
-      imageComponent: undefined,
+        initialListSize: 10,
+        removeClippedSubviews: true,
+        imageComponent: undefined
     };
 
     imageRefs = new Map();
@@ -52,6 +42,10 @@ export default class Gallery extends PureComponent {
         this.onPageSelected = this.onPageSelected.bind(this);
         this.onPageScrollStateChanged = this.onPageScrollStateChanged.bind(this);
         this.onPageScroll = this.onPageScroll.bind(this);
+        this.getViewPagerInstance = this.getViewPagerInstance.bind(this);
+        this.getCurrentImageTransformer = this.getCurrentImageTransformer.bind(this);
+        this.getImageTransformer = this.getImageTransformer.bind(this);
+        this.getViewPagerInstance = this.getViewPagerInstance.bind(this);
     }
 
     componentWillMount () {
@@ -225,7 +219,7 @@ export default class Gallery extends PureComponent {
     }
 
     renderPage (pageData, pageId) {
-        const { onViewTransformed, onTransformGestureReleased } = this.props;
+        const { onViewTransformed, onTransformGestureReleased, renderError } = this.props;
         return (
             <TransformableImage
               onViewTransformed={((transform) => {
@@ -236,7 +230,9 @@ export default class Gallery extends PureComponent {
               })}
               ref={((ref) => { this.imageRefs.set(pageId, ref); })}
               key={'innerImage#' + pageId}
+              renderError={renderError}
               source={pageData.source}
+              dimensions={pageData.dimensions}
             />
         );
     }
@@ -254,7 +250,6 @@ export default class Gallery extends PureComponent {
     }
 
     render () {
-        DEV && console.log('Gallery render');
         let gestureResponder = this.gestureResponder;
 
         let images = this.props.images;
