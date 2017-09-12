@@ -2,8 +2,6 @@ import React, { PropTypes, PureComponent } from 'react';
 import { View, ListView, ViewPropTypes } from 'react-native';
 import Scroller from 'react-native-scroller';
 import { createResponder } from 'react-native-gesture-responder';
-import TimerMixin from 'react-timer-mixin';
-import reactMixin from 'react-mixin';
 
 const MIN_FLING_VELOCITY = 0.5;
 
@@ -12,6 +10,7 @@ export default class ViewPager extends PureComponent {
         ...View.propTypes,
         initialPage: PropTypes.number,
         pageMargin: PropTypes.number,
+        scrollViewStyle: ViewPropTypes ? ViewPropTypes.style : View.propTypes.style,
         scrollEnabled: PropTypes.bool,
         renderPage: PropTypes.func,
         pageDataArray: PropTypes.array,
@@ -100,21 +99,11 @@ export default class ViewPager extends PureComponent {
     componentDidUpdate () {
         if (!this.initialPageSettled) {
             this.initialPageSettled = true;
-            if (Platform.OS === 'ios') {
-                this.scrollToPage(this.props.initialPage, true);
-            } else {
-                // A trick to solve bugs on Android. Delay a little
-                setTimeout(() => this.scrollToPage(this.props.initialPage, true), 0);
-            }
+            this.scrollToPage(this.props.initialPage, true);
         } else if (this.layoutChanged) {
             this.layoutChanged = false;
             if (typeof this.currentPage === 'number') {
-                if (Platform.OS === 'ios') {
-                    this.scrollToPage(this.currentPage, true);
-                } else {
-                    // A trick to solve bugs on Android. Delay a little
-                    setTimeout(this.scrollToPage(this.currentPage, true), 0);
-                }
+                this.scrollToPage(this.currentPage, true);
             }
         }
     }
@@ -267,7 +256,7 @@ export default class ViewPager extends PureComponent {
               style={[style, { flex: 1 }]}
               {...gestureResponder}>
                 <ListView
-                  style={{flex: 1}}
+                  style={[{ flex: 1 }, scrollViewStyle]}
                   ref={'innerListView'}
                   scrollEnabled={false}
                   horizontal={true}
@@ -282,5 +271,3 @@ export default class ViewPager extends PureComponent {
         );
     }
 }
-
-reactMixin(ViewPager.prototype, TimerMixin);
