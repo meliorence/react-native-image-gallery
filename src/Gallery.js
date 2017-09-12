@@ -1,5 +1,5 @@
 import React, { PureComponent, PropTypes } from 'react';
-import { View } from 'react-native';
+import { View, ViewPropTypes } from 'react-native';
 import { createResponder } from 'react-native-gesture-responder';
 import TransformableImage from './TransformableImage';
 import ViewPager from './ViewPager';
@@ -9,6 +9,7 @@ export default class Gallery extends PureComponent {
         ...View.propTypes,
         images: PropTypes.arrayOf(PropTypes.object),
         initialPage: PropTypes.number,
+        scrollViewStyle: ViewPropTypes ? ViewPropTypes.style : View.propTypes.style,
         pageMargin: PropTypes.number,
         onPageSelected: PropTypes.func,
         onPageScrollStateChanged: PropTypes.func,
@@ -25,7 +26,8 @@ export default class Gallery extends PureComponent {
     static defaultProps = {
         initialListSize: 10,
         removeClippedSubviews: true,
-        imageComponent: undefined
+        imageComponent: undefined,
+        scrollViewStyle: {}
     };
 
     imageRefs = new Map();
@@ -272,9 +274,9 @@ export default class Gallery extends PureComponent {
               {...gestureResponder}
               onPageSelected={this.onPageSelected}
               onPageScrollStateChanged={this.onPageScrollStateChanged}
-              onPageScroll={this.onPageScroll}
-              removeClippedSubviews={ this.props.removeClippedSubviews }
-              initialListSize={ this.props.initialListSize }
+              onPageScroll={this.props.onPageScroll}
+              removeClippedSubviews={this.props.removeClippedSubviews}
+              initialListSize={this.props.initialListSize}
             />
         );
     }
