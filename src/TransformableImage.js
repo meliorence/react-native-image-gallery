@@ -63,7 +63,7 @@ export default class TransformableImage extends PureComponent {
         if (!sameSource(this.props.source, nextProps.source)) {
             __DEV__ && console.log('TransformableImage: componentWillReceiveProps - different source');
             // image source changed, clear last image's imageDimensions info if any
-            this.setState({imageDimensions: nextProps.source.dimensions, keyAcumulator: this.state.keyAcumulator + 1});
+            this.setState({ imageDimensions: nextProps.source.dimensions, keyAcumulator: this.state.keyAcumulator + 1 });
             if (!nextProps.source.dimensions) { // if we don't have image dimensions provided in source
                 this.getImageSize(nextProps.source);
             }
@@ -92,7 +92,15 @@ export default class TransformableImage extends PureComponent {
     }
 
     getImageSize (source) {
-        if (!source) return;
+        if (!source) {
+            return;
+        }
+        const { dimensions } = this.props;
+
+        if (dimensions) {
+            this.setState({ imageDimensions: dimensions });
+            return;
+        }
 
         if (source && source.uri) {
             Image.getSize(
@@ -113,11 +121,7 @@ export default class TransformableImage extends PureComponent {
                 }
             );
         } else {
-            if (this.props.dimensions) {
-                this.setState({ imageDimensions: this.props.dimensions });
-            } else {
-                console.warn('react-native-image-gallery', 'Please provide dimensions of your local images');
-            }
+            console.warn('react-native-image-gallery', 'Please provide dimensions of your local images');
         }
     }
 
