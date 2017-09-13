@@ -1,5 +1,15 @@
 # react-native-image-gallery
 
+## Table of contents
+
+- [react-native-image-gallery](#react-native-image-gallery)
+    - [Table of contents](#table-of-contents)
+    - [Install](#install)
+    - [Usage example](#usage-example)
+    - [Remote and local images](#remote-and-local-images)
+    - [Props](#props)
+    - [Scroll state and events](#scroll-state-and-events)
+
 >This used to be a fork of [ldn0x7dc/react-native-gallery](https://github.com/ldn0x7dc/react-native-image-gallery) but since the author has stopped maintaining it, here's our own repo. Props to him for his work !
 
 A pure JavaScript image gallery component for react-native apps with common gestures like pan, pinch and doubleTap, supporting both iOS and Android.
@@ -9,19 +19,19 @@ This component aims to be (one of) the best image viewer for react-native apps. 
 * Gesture handle: besides common pan, pinch and doubleTap, this component does well in targeting foucs point( or pivot) when zoom-in and zoom-out.
 * Responder switch: the gesture responder switch is more flexible than any other component, that is, the scrollable container and the wrapped image children perform well in acquiring and releasing gesture responder from/to each other.
 
+This component utilizes **[@ldn0x7dc/react-native-view-pager](https://github.com/ldn0x7dc/react-native-view-pager)** as the scrollable container and **[react-native-transformable-image](https://github.com/ldn0x7dc/react-native-transformable-image)** as the wrapped image. 
+
 This component works on react-native **0.28+**.
 
-You can try this example live in **Archriss' showcase app** on [Android](https://play.google.com/store/apps/details?id=fr.archriss.demo.app) and [iOS](https://itunes.apple.com/lu/app/archriss-presentation-mobile/id1180954376?mt=8).
+You can try this example live in **Archriss' showcase app** on [Android](https://play.google.com/store/apps/details?id=fr.archriss.demo.app) and [iOS](https://itunes.apple.com/lu/app/archriss-presentation-mobile/id1180954376?mt=8) or check out the demo.
 
 ![react-native-image-gallery](https://media.giphy.com/media/3o7bugPvJyqYWz9bK8/giphy.gif)
 
 ## Install
 
-`npm install --save react-native-image-gallery@latest`
+`npm install --save react-native-image-gallery`
 
-## Documentaion
-
-Quite easy to use:
+## Usage example
 
 ```javascript
 import Gallery from 'react-native-image-gallery';
@@ -29,34 +39,55 @@ import Gallery from 'react-native-image-gallery';
   render() {
     return (
       <Gallery
-        style={{flex: 1, backgroundColor: 'black'}}
+        style={{ flex: 1, backgroundColor: 'black' }}
         images={[
           { source: require('yourApp/image.png'), dimensions: { width: 150, height: 150 } },
-          { source: { uri: 'http://p10.qhimg.com/t019e9cf51692f735be.jpg' } },
-          { source: { uri: 'http://ww2.sinaimg.cn/mw690/714a59a7tw1dxqkkg0cwlj.jpg' } },
-          { source: { uri: 'http://www.bz55.com/uploads/allimg/150122/139-150122145421.jpg' } }
+          { source: { uri: 'http://i.imgur.com/XP2BE7q.jpg' } },
+          { source: { uri: 'http://i.imgur.com/5nltiUd.jpg' } },
+          { source: { uri: 'http://i.imgur.com/6vOahbP.jpg' } },
+          { source: { uri: 'http://i.imgur.com/kj5VXtG.jpg' } }
         ]}
       />
     );
   }
 ```
 
-You can now use either a remote image, by specifying `source.uri`, or a local image where `source` is the result of your `require()`. **Be aware that you need to pass the dimensions of your local images ! It's still not required for remotes images.**
+## Remote and local images
 
-This component utilizes **[@ldn0x7dc/react-native-view-pager](https://github.com/ldn0x7dc/react-native-view-pager)** as the scrollable container and **[react-native-transformable-image](https://github.com/ldn0x7dc/react-native-transformable-image)** as the wrapped image. 
+You can now use either a remote image, by specifying `source.uri`, or a local image where `source` is the result of your `require()`.
 
-#### Props
+**Be aware that you need to pass the dimensions of your local images ! It's still not required for remotes images**, although you can still provide their dimensions to prevent the gallery from fetching their height and width online, which can improve the perfs a bit.
 
-* **images**: array, contains image urls
-* **initialPage**, **pageMargin**, **onPageSelected**, **onPageScrollStateChanged**, **onPageScroll**: inherited from **[@ldn0x7dc/react-native-view-pager](https://github.com/ldn0x7dc/react-native-view-pager)**. Check the link for more details.
-* **onSingleTapConfirmed**: Called after user single taped( not a double tap)
-* **onGalleryStateChanged**: function. (idle) => {}.
-* **onLongPress**: (gestureState) => {}
-* **loader**: React component that will be displayed before each image has been loaded. For instance, you could use `ActivityIndicator`.
+## Props
 
-### Add your custom views above image
+Prop | Description | Type | Default
+------ | ------ | ------ | ------
+`images` | Your array of images | `array` | Required
+`initialPage` | Image displayed first | `number` | `0`
+`imageComponent` | Custom function to render your images | `function` | `<Image>` component
+`errorComponent` | Custom function to render the page of an image that couldn't be displayed | `function` | A `<View>` with a stylized error
+`pageMargin` | Blank space to show between images | `number` | `0`
+`onPageSelected` | Fired with the index of page that has been selected | `function`
+`onPageScrollStateChanged` | Called when page scrolling state has changed, see [scroll state and events](#scroll-state-and-events) | `function`
+`onPageScroll` | Scroll event, see [scroll state and events](#scroll-state-and-events) | `function`
+`scrollViewStyle` | Custom style for the `FlastList` component | `object` | `{}`
+`onSingleTapConfirmed` | Fired after a single tap | `function`
+`onLongPress` | Fire after a long press | `function`
 
-It's a common practice to float a comment box or like button above the image. This component provides a convenient interface to implement this feature:
+## Scroll state and events
 
-- onSingleTapConfirmed(): a good time for you to display the responding floating view. 
-- onGalleryStateChanged(idle): If *idle* is false, it's a good time for your to hide any floating views.
+* `onPageScroll` : (event) => {}. 
+
+  The event object carries following data: 
+
+  * `position`:  index of first page from the left that is currently visible.
+  * `offset`: value from range [0,1) describing stage between page transitions.
+  * `fraction`: means that (1 - x) fraction of the page at "position" index is visible, and x fraction of the next page is visible.
+
+* `onPageScrollStateChanged` : (state) => {}.
+
+  Called when the page scrolling state has changed. The page scrolling state can be in 3 states:
+
+  * `'idle'`: there is no interaction with the page scroller happening at the time.
+  * `'dragging'`: there is currently an interaction with the page scroller.
+  * ``settling'`: there was an interaction with the page scroller, and the page scroller is now finishing it's closing or opening animation.
