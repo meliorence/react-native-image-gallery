@@ -192,7 +192,7 @@ export default class Gallery extends PureComponent {
 
     getImageTransformer (page) {
         if (page >= 0 && page < this.pageCount) {
-            let ref = this.imageRefs.get(page + '');
+            let ref = this.imageRefs.get(page);
             if (ref) {
                 return ref.getViewTransformerInstance();
             }
