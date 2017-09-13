@@ -39,16 +39,28 @@ export default class DemoGallery extends Component {
 
         // this.addImages();
         // this.removeImages();
+        // this.removeImage(2, 3000);
     }
 
     addImages () {
+        // Debugging helper : keep adding images at the end of the gallery.
         setInterval(() => {
             const newArray = [...this.state.images, { source: { uri: 'http://i.imgur.com/DYjAHAf.jpg' } }];
             this.setState({ images: newArray });
         }, 5000);
     }
 
+    removeImage (slideIndex, delay) {
+        // Debugging helper : remove a given image after some delay.
+        // Ensure the gallery doesn't crash and the scroll is updated accordingly.
+        setTimeout(() => {
+            const newArray = this.state.images.filter((element, index) => index !== slideIndex);
+            this.setState({ images: newArray });
+        }, delay);
+    }
+
     removeImages () {
+        // Debugging helper : keep removing the last slide of the gallery.
         setInterval(() => {
             const { images } = this.state;
             console.log(images.length);
@@ -99,7 +111,7 @@ export default class DemoGallery extends Component {
                   images={this.state.images}
                   errorComponent={this.renderError}
                   onPageSelected={this.onChangeImage}
-                  initialPage={13}
+                  initialPage={0}
                 />
                 { this.galleryCount }
                 { this.caption }
