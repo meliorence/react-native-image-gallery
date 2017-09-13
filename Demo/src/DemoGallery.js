@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { View, Text, ActivityIndicator } from 'react-native';
 import Gallery from 'react-native-image-gallery';
 
 export default class DemoGallery extends Component {
@@ -6,16 +7,38 @@ export default class DemoGallery extends Component {
     constructor (props) {
         super(props);
         this.state = {
+            index: 0,
             images: [
-                { source: require('./static/images/placehold.jpg'), dimensions: { width: 540, height: 720 } },
-                { source: { uri: 'http://wrongdomain.tld/images/wrongimage.jpg' } },
-                { source: { uri: 'http://i.imgur.com/gSmWCJF.jpg' } },
-                { source: { uri: 'http://i.imgur.com/XP2BE7q.jpg' } },
-                { source: { uri: 'http://i.imgur.com/5nltiUd.jpg' } }
+                {
+                    caption: 'This image is bundled with the app, so you must provide dimensions for it',
+                    source: require('./static/images/placehold.jpg'),
+                    dimensions: { width: 540, height: 720 }
+                },
+                {
+                    caption: 'This image has a broken URL',
+                    source: { uri: 'http://wrongdomain.tld/images/wrongimage.jpg' }
+                },
+                {
+                    caption: 'Remote image with supplied dimensions',
+                    source: { uri: 'http://i.imgur.com/gSmWCJF.jpg' },
+                    dimensions: { width: 1200, height: 800 }
+                },
+                { caption: 'Caption 4', source: { uri: 'http://i.imgur.com/XP2BE7q.jpg' } },
+                { caption: 'Caption 5', source: { uri: 'http://i.imgur.com/5nltiUd.jpg' } },
+                { caption: 'Caption 6', source: { uri: 'http://i.imgur.com/6vOahbP.jpg' } },
+                { caption: 'Caption 7', source: { uri: 'http://i.imgur.com/kj5VXtG.jpg' } },
+                { caption: 'Caption 8', source: { uri: 'http://i.imgur.com/BN8RVGa.jpg' } },
+                { caption: 'Caption 9', source: { uri: 'http://i.imgur.com/jXbhTbv.jpg' } },
+                { caption: 'Caption 10', source: { uri: 'http://i.imgur.com/30s12Qj.jpg' } },
+                { caption: 'Caption 11', source: { uri: 'http://i.imgur.com/4A1Q49y.jpg' } },
+                { caption: 'Caption 12', source: { uri: 'http://i.imgur.com/JfVDTF9.jpg' } },
+                { caption: 'Caption 13', source: { uri: 'http://i.imgur.com/Vv4bmwR.jpg' } }
             ]
         };
-        this.addImages();
-        this.removeImages();
+        this.onChangeImage = this.onChangeImage.bind(this);
+
+        // this.addImages();
+        // this.removeImages();
     }
 
     addImages () {
@@ -27,17 +50,60 @@ export default class DemoGallery extends Component {
 
     removeImages () {
         setInterval(() => {
-            const newArray = this.state.images.filter((element, index) => index !== 1);
+            const { images } = this.state;
+            console.log(images.length);
+            if (images.length <= 1) {
+                return;
+            }
+            const newArray = this.state.images.filter((element, index) => index !== this.state.images.length - 1);
             this.setState({ images: newArray });
-        }, 7000);
+        }, 2000);
+    }
+
+    onChangeImage (index) {
+        this.setState({ index });
+    }
+
+    renderError () {
+        return (
+            <View style={{ flex: 1, backgroundColor: 'black', alignItems: 'center', justifyContent: 'center' }}>
+                 <Text style={{ color: 'white', fontSize: 15, fontStyle: 'italic' }}>This image cannot be displayed...</Text>
+                 <Text style={{ color: 'white', fontSize: 15, fontStyle: 'italic' }}>... but this is fine :)</Text>
+            </View>
+        );
+    }
+
+    get caption () {
+        const { images, index } = this.state;
+        return (
+            <View style={{ bottom: 0, height: 65, backgroundColor: 'rgba(0, 0, 0, 0.7)', width: '100%', position: 'absolute', justifyContent: 'center' }}>
+                <Text style={{ textAlign: 'center', color: 'white', fontSize: 15, fontStyle: 'italic' }}>{ (images[index] && images[index].caption) || '' } </Text>
+            </View>
+        );
+    }
+
+    get galleryCount () {
+        const { index, images } = this.state;
+        return (
+            <View style={{ top: 0, height: 65, backgroundColor: 'rgba(0, 0, 0, 0.7)', width: '100%', position: 'absolute', justifyContent: 'center' }}>
+                <Text style={{ textAlign: 'right', color: 'white', fontSize: 15, fontStyle: 'italic', paddingRight: '10%' }}>{ index + 1 } / { images.length }</Text>
+            </View>
+        );
     }
 
     render () {
         return (
-            <Gallery
-              style={{flex: 1, backgroundColor: 'black'}}
-              images={this.state.images}
-            />
+            <View style={{ flex: 1 }} >
+                <Gallery
+                  style={{flex: 1, backgroundColor: '#696969'}}
+                  images={this.state.images}
+                  errorComponent={this.renderError}
+                  onPageSelected={this.onChangeImage}
+                  initialPage={13}
+                />
+                { this.galleryCount }
+                { this.caption }
+            </View>
         );
     }
 }
