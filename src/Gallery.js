@@ -120,7 +120,8 @@ export default class Gallery extends PureComponent {
 
         this.imageResponder = {
             onStart: (evt, gestureState) => {
-                this.getCurrentImageTransformer().onResponderGrant(evt, gestureState);
+                const currentImageTransformer = this.getCurrentImageTransformer();
+                currentImageTransformer && currentImageTransformer.onResponderGrant(evt, gestureState);
                 if (this.props.onLongPress) {
                     this._longPressTimeout = setTimeout(() => {
                         this.props.onLongPress(gestureState);
@@ -128,11 +129,13 @@ export default class Gallery extends PureComponent {
                 }
             },
             onMove: (evt, gestureState) => {
-                this.getCurrentImageTransformer().onResponderMove(evt, gestureState);
+                const currentImageTransformer = this.getCurrentImageTransformer();
+                currentImageTransformer && currentImageTransformer.onResponderMove(evt, gestureState);
                 clearTimeout(this._longPressTimeout);
             },
             onEnd: (evt, gestureState) => {
-                this.getCurrentImageTransformer().onResponderRelease(evt, gestureState);
+                const currentImageTransformer = this.getCurrentImageTransformer();
+                currentImageTransformer && currentImageTransformer.onResponderRelease(evt, gestureState);
                 clearTimeout(this._longPressTimeout);
             }
         };
@@ -151,6 +154,10 @@ export default class Gallery extends PureComponent {
             return false;
         }
         const viewTransformer = this.getCurrentImageTransformer();
+        if (!viewTransformer) {
+            return false;
+        }
+
         const space = viewTransformer.getAvailableTranslateSpace();
         const dx = gestureState.moveX - gestureState.previousMoveX;
 
