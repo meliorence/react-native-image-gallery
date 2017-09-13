@@ -29,7 +29,7 @@ You can try this example live in **Archriss' showcase app** on [Android](https:/
 
 ## Install
 
-`npm install --save react-native-image-gallery`
+`npm install --save react-native-image-gallery` or `yarn add react-native-image-gallery`
 
 ## Usage example
 
@@ -64,7 +64,7 @@ Prop | Description | Type | Default
 ------ | ------ | ------ | ------
 `images` | Your array of images | `array` | Required
 `initialPage` | Image displayed first | `number` | `0`
-`imageComponent` | Custom function to render your images | `function` | `<Image>` component
+`imageComponent` | Custom function to render your images, 1st param is the image props, 2nd is its dimensions | `function` | `<Image>` component
 `errorComponent` | Custom function to render the page of an image that couldn't be displayed | `function` | A `<View>` with a stylized error
 `pageMargin` | Blank space to show between images | `number` | `0`
 `onPageSelected` | Fired with the index of page that has been selected | `function`
