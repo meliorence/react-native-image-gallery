@@ -170,7 +170,7 @@ export default class TransformableImage extends PureComponent {
             capInsets: { left: 0.1, top: 0.1, right: 0.1, bottom: 0.1 }
         };
 
-        const image = imageComponent ? imageComponent(imageProps) : <Image { ...imageProps } />;
+        const image = imageComponent ? imageComponent(imageProps, imageDimensions) : <Image { ...imageProps } />;
 
         return (
             <ViewTransformer
