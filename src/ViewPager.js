@@ -1,5 +1,5 @@
 import React, { PropTypes, PureComponent } from 'react';
-import { View, ListView, ViewPropTypes } from 'react-native';
+import { View, FlatList, ViewPropTypes } from 'react-native';
 import Scroller from 'react-native-scroller';
 import { createResponder } from 'react-native-gesture-responder';
 
@@ -46,8 +46,7 @@ export default class ViewPager extends PureComponent {
         this.onResponderMove = this.onResponderMove.bind(this);
         this.onResponderRelease = this.onResponderRelease.bind(this);
 
-        const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-        this.state = { width: 0, height: 0, dataSource: ds.cloneWithRows([]) };
+        this.state = { width: 0, height: 0 };
 
         this.scroller = new Scroller(true, (dx, dy, scroller) => {
             if (dx === 0 && dy === 0 && scroller.isFinished()) {
@@ -56,7 +55,7 @@ export default class ViewPager extends PureComponent {
                 }
             } else {
                 const curX = this.scroller.getCurrX();
-                this.refs['innerListView'] && this.refs['innerListView'].scrollTo({x: curX, animated: false});
+                this.refs['innerFlatList'] && this.refs['innerFlatList'].scrollToOffset({ offset: curX, animated: false });
 
                 let position = Math.floor(curX / (this.state.width + this.props.pageMargin));
                 position = this.validPage(position);
@@ -86,13 +85,8 @@ export default class ViewPager extends PureComponent {
         let {width, height} = e.nativeEvent.layout;
         let sizeChanged = this.state.width !== width || this.state.height !== height;
         if (width && height && sizeChanged) {
-            // if layout changed, create a new DataSource instance to trigger renderRow
             this.layoutChanged = true;
-            this.setState({
-                width,
-                height,
-                dataSource: (new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2})).cloneWithRows([])
-            });
+            this.setState({ width, height });
         }
     }
 
@@ -209,10 +203,14 @@ export default class ViewPager extends PureComponent {
         return this.scroller.getCurrX() - this.getScrollOffsetOfPage(this.currentPage);
     }
 
-    renderRow (rowData, sectionID, rowID, highlightRow) {
+    keyExtractor (item, index) {
+        return index;
+    }
+
+    renderRow ({ item, index }) {
         const { width, height } = this.state;
         const { renderPage, pageMargin } = this.props;
-        let page = renderPage(rowData, rowID);
+        let page = renderPage(item, index);
 
         const layout = { width: width, height: height, position: 'relative' };
         const style = page.props.style ? [page.props.style, layout] : layout;
@@ -220,7 +218,7 @@ export default class ViewPager extends PureComponent {
         let newProps = { ...page.props, ref: page.ref, style };
         const element = React.createElement(page.type, newProps);
 
-        if (pageMargin > 0 && rowID > 0) {
+        if (pageMargin > 0 && index > 0) {
             // Do not using margin style to implement pageMargin.
             // The ListView seems to calculate a wrong width for children views with margin.
             return (
@@ -237,13 +235,11 @@ export default class ViewPager extends PureComponent {
         const { width, height } = this.state;
         const { pageDataArray, scrollEnabled, style, removeClippedSubviews, initialListSize, scrollViewStyle } = this.props;
 
-        let dataSource = this.state.dataSource;
         if (width && height) {
             let list = pageDataArray;
             if (!list) {
                 list = [];
             }
-            dataSource = dataSource.cloneWithRows(list);
             this.pageCount = list.length;
         }
 
@@ -257,16 +253,16 @@ export default class ViewPager extends PureComponent {
               {...this.props}
               style={[style, { flex: 1 }]}
               {...gestureResponder}>
-                <ListView
+                <FlatList
                   style={[{ flex: 1 }, scrollViewStyle]}
-                  ref={'innerListView'}
+                  ref={'innerFlatList'}
+                  keyExtractor={this.keyExtractor}
                   scrollEnabled={false}
                   horizontal={true}
-                  enableEmptySections={true}
-                  dataSource={dataSource}
-                  renderRow={this.renderRow}
+                  data={pageDataArray}
+                  renderItem={this.renderRow}
                   onLayout={this.onLayout}
-                  removeClippedSubviews={ removeClippedSubviews }
+                  removeClippedSubviews={removeClippedSubviews}
                   initialListSize={ initialListSize }
               />
             </View>
