@@ -45,7 +45,6 @@ export default class TransformableImage extends PureComponent {
         this.state = {
             viewWidth: 0,
             viewHeight: 0,
-
             imageLoaded: false,
             imageDimensions: props.source.dimensions,
             keyAcumulator: 1
@@ -58,16 +57,22 @@ export default class TransformableImage extends PureComponent {
         }
     }
 
+    componentDidMount () {
+        this._mounted = true;
+    }
+
     componentWillReceiveProps (nextProps) {
-        __DEV__ && console.log('TransformableImage: componentWillReceiveProps');
         if (!sameSource(this.props.source, nextProps.source)) {
-            __DEV__ && console.log('TransformableImage: componentWillReceiveProps - different source');
             // image source changed, clear last image's imageDimensions info if any
             this.setState({ imageDimensions: nextProps.source.dimensions, keyAcumulator: this.state.keyAcumulator + 1 });
             if (!nextProps.source.dimensions) { // if we don't have image dimensions provided in source
                 this.getImageSize(nextProps.source);
             }
         }
+    }
+
+    componentWillUnmount () {
+        this._mounted = false;
     }
 
     onLoadStart (e) {
@@ -106,18 +111,16 @@ export default class TransformableImage extends PureComponent {
             Image.getSize(
                 source.uri,
                 (width, height) => {
-                    __DEV__ && console.log(`Image size for ${source.uri}`, { width, height });
                     if (width && height) {
                         if (this.state.imageDimensions && this.state.imageDimensions.width === width && this.state.imageDimensions.height === height) {
                             // no need to update state
                         } else {
-                            this.setState({ imageDimensions: { width, height } });
+                            this._mounted && this.setState({ imageDimensions: { width, height } });
                         }
                     }
                 },
-                (error) => {
-                    this.setState({ error: true });
-                    console.warn(`getImageSize errored for ${source.url}`, JSON.stringify(error));
+                () => {
+                    this._mounted && this.setState({ error: true });
                 }
             );
         } else {
@@ -151,7 +154,6 @@ export default class TransformableImage extends PureComponent {
         }
 
         if (width && height) {
-            __DEV__ && console.log(`TransformableImage: (${width}, ${height})`);
             contentAspectRatio = width / height;
             if (viewWidth && viewHeight) {
                 maxScale = Math.max(width / viewWidth, height / viewHeight);
