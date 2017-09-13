@@ -90,7 +90,7 @@ export default class ViewPager extends PureComponent {
         }
     }
 
-    componentDidUpdate () {
+    componentDidUpdate (prevProps) {
         if (!this.initialPageSettled) {
             this.initialPageSettled = true;
             this.scrollToPage(this.props.initialPage, true);
@@ -99,7 +99,8 @@ export default class ViewPager extends PureComponent {
             if (typeof this.currentPage === 'number') {
                 this.scrollToPage(this.currentPage, true);
             }
-        } else if (this.currentPage + 1 >= this.props.images.length) {
+        } else if (this.currentPage + 1 >= this.props.images.length &&
+            this.props.images.length !== prevProps.images.length) {
             this.scrollToPage(this.props.images.length, true);
         }
     }
