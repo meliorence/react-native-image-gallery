@@ -218,7 +218,7 @@ export default class Gallery extends PureComponent {
     }
 
     renderPage (pageData, pageId) {
-        const { onViewTransformed, onTransformGestureReleased, errorComponent } = this.props;
+        const { onViewTransformed, onTransformGestureReleased, errorComponent, imageComponent } = this.props;
         return (
             <TransformableImage
               onViewTransformed={((transform) => {
@@ -230,6 +230,7 @@ export default class Gallery extends PureComponent {
               ref={((ref) => { this.imageRefs.set(pageId, ref); })}
               key={'innerImage#' + pageId}
               errorComponent={errorComponent}
+              imageComponent={imageComponent}
               source={pageData.source}
               dimensions={pageData.dimensions}
             />
