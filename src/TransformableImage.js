@@ -22,7 +22,7 @@ export default class TransformableImage extends PureComponent {
         onViewTransformed: PropTypes.func,
         imageComponent: PropTypes.func,
         resizeMode: PropTypes.string,
-        renderError: PropTypes.func
+        errorComponent: PropTypes.func
     };
 
     static defaultProps = {
@@ -133,7 +133,7 @@ export default class TransformableImage extends PureComponent {
     }
 
     renderError () {
-        return (this.props.renderError && this.props.renderError()) || (
+        return (this.props.errorComponent && this.props.errorComponent()) || (
             <View style={{ flex: 1, backgroundColor: 'black', alignItems: 'center', justifyContent: 'center' }}>
                  <Text style={{ color: 'white', fontSize: 15, fontStyle: 'italic' }}>This image cannot be displayed...</Text>
             </View>

@@ -17,14 +17,12 @@ export default class Gallery extends PureComponent {
         onSingleTapConfirmed: PropTypes.func,
         onGalleryStateChanged: PropTypes.func,
         onLongPress: PropTypes.func,
-        initialListSize: PropTypes.number,
         removeClippedSubviews: PropTypes.bool,
         imageComponent: PropTypes.func,
-        renderError: PropTypes.func
+        errorComponent: PropTypes.func
     };
 
     static defaultProps = {
-        initialListSize: 10,
         removeClippedSubviews: true,
         imageComponent: undefined,
         scrollViewStyle: {}
@@ -220,7 +218,7 @@ export default class Gallery extends PureComponent {
     }
 
     renderPage (pageData, pageId) {
-        const { onViewTransformed, onTransformGestureReleased, renderError } = this.props;
+        const { onViewTransformed, onTransformGestureReleased, errorComponent } = this.props;
         return (
             <TransformableImage
               onViewTransformed={((transform) => {
@@ -231,7 +229,7 @@ export default class Gallery extends PureComponent {
               })}
               ref={((ref) => { this.imageRefs.set(pageId, ref); })}
               key={'innerImage#' + pageId}
-              renderError={renderError}
+              errorComponent={errorComponent}
               source={pageData.source}
               dimensions={pageData.dimensions}
             />
@@ -276,7 +274,6 @@ export default class Gallery extends PureComponent {
               onPageScrollStateChanged={this.onPageScrollStateChanged}
               onPageScroll={this.props.onPageScroll}
               removeClippedSubviews={this.props.removeClippedSubviews}
-              initialListSize={this.props.initialListSize}
             />
         );
     }
