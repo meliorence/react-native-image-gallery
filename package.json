@@ -17,7 +17,7 @@
   },
   "homepage": "https://github.com/archriss/react-native-image-gallery#readme",
   "dependencies": {
-    "react-native-view-transformer": "0.0.28",
+    "prop-types": "15.5.10",
     "react-native-gesture-responder": "0.1.1",
     "react-native-scroller": "0.0.6",
     "react-mixin": "^3.0.5",
