@@ -4,10 +4,13 @@ import ViewTransformer from 'react-native-view-transformer';
 
 export default class TransformableImage extends PureComponent {
     static propTypes = {
-        source: PropTypes.oneOfType([
-            PropTypes.shape({ uri: PropTypes.string.isRequired }),
-            PropTypes.number
-        ]).isRequired,
+        image: PropTypes.shape({
+            source: PropTypes.oneOfType([
+                PropTypes.object,
+                PropTypes.number
+            ]).isRequired,
+            dimensions: PropTypes.shape({ width: PropTypes.number, height: PropTypes.number })
+        }).isRequired,
         style: ViewPropTypes ? ViewPropTypes.style : View.propTypes.style,
         onLoad: PropTypes.func,
         onLoadStart: PropTypes.func,
@@ -46,14 +49,14 @@ export default class TransformableImage extends PureComponent {
             viewWidth: 0,
             viewHeight: 0,
             imageLoaded: false,
-            imageDimensions: props.source.dimensions,
+            imageDimensions: props.image.dimensions,
             keyAcumulator: 1
         };
     }
 
     componentWillMount () {
         if (!this.state.imageDimensions) {
-            this.getImageSize(this.props.source);
+            this.getImageSize(this.props.image);
         }
     }
 
@@ -62,11 +65,11 @@ export default class TransformableImage extends PureComponent {
     }
 
     componentWillReceiveProps (nextProps) {
-        if (!sameSource(this.props.source, nextProps.source)) {
+        if (!sameImage(this.props.image, nextProps.image)) {
             // image source changed, clear last image's imageDimensions info if any
-            this.setState({ imageDimensions: nextProps.source.dimensions, keyAcumulator: this.state.keyAcumulator + 1 });
-            if (!nextProps.source.dimensions) { // if we don't have image dimensions provided in source
-                this.getImageSize(nextProps.source);
+            this.setState({ imageDimensions: nextProps.image.dimensions, keyAcumulator: this.state.keyAcumulator + 1 });
+            if (!nextProps.image.dimensions) { // if we don't have image dimensions provided in source
+                this.getImageSize(nextProps.image);
             }
         }
     }
@@ -96,11 +99,11 @@ export default class TransformableImage extends PureComponent {
         }
     }
 
-    getImageSize (source) {
-        if (!source) {
+    getImageSize (image) {
+        if (!image) {
             return;
         }
-        const { dimensions } = this.props;
+        const { source, dimensions } = image;
 
         if (dimensions) {
             this.setState({ imageDimensions: dimensions });
@@ -142,7 +145,7 @@ export default class TransformableImage extends PureComponent {
 
     render () {
         const { imageDimensions, viewWidth, viewHeight, error, keyAccumulator, imageLoaded } = this.state;
-        const { style, imageComponent, resizeMode, enableTransform, enableScale, enableTranslate, onTransformGestureReleased, onViewTransformed } = this.props;
+        const { style, image, imageComponent, resizeMode, enableTransform, enableScale, enableTranslate, onTransformGestureReleased, onViewTransformed } = this.props;
 
         let maxScale = 1;
         let contentAspectRatio;
@@ -163,6 +166,7 @@ export default class TransformableImage extends PureComponent {
 
         const imageProps = {
             ...this.props,
+            source: image.source,
             style: [style, { backgroundColor: 'transparent' }],
             resizeMode: resizeMode,
             onLoadStart: this.onLoadStart,
@@ -170,7 +174,7 @@ export default class TransformableImage extends PureComponent {
             capInsets: { left: 0.1, top: 0.1, right: 0.1, bottom: 0.1 }
         };
 
-        const image = imageComponent ? imageComponent(imageProps, imageDimensions) : <Image { ...imageProps } />;
+        const content = imageComponent ? imageComponent(imageProps, imageDimensions) : <Image { ...imageProps } />;
 
         return (
             <ViewTransformer
@@ -186,13 +190,13 @@ export default class TransformableImage extends PureComponent {
               contentAspectRatio={contentAspectRatio}
               onLayout={this.onLayout}
               style={style}>
-                { error ? this.renderError() : image }
+                { error ? this.renderError() : content }
             </ViewTransformer>
         );
     }
 }
 
-function sameSource (source, nextSource) {
+function sameImage (source, nextSource) {
     if (source === nextSource) {
         return true;
     }
