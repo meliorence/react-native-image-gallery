@@ -10,7 +10,7 @@
     - [Props](#props)
     - [Scroll state and events](#scroll-state-and-events)
 
->This used to be a fork of [ldn0x7dc/react-native-gallery](https://github.com/ldn0x7dc/react-native-image-gallery) but since the author has stopped maintaining it, here's our own repo. Props to him for his work !
+>This used to be a fork of [ldn0x7dc/react-native-gallery](https://github.com/ldn0x7dc/react-native-gallery) but since the author has stopped maintaining it, here's our own repo. Props to him for his work !
 
 A pure JavaScript image gallery component for react-native apps with common gestures like pan, pinch and doubleTap, supporting both iOS and Android.
 
@@ -90,4 +90,4 @@ Prop | Description | Type | Default
 
   * `'idle'`: there is no interaction with the page scroller happening at the time.
   * `'dragging'`: there is currently an interaction with the page scroller.
-  * ``settling'`: there was an interaction with the page scroller, and the page scroller is now finishing it's closing or opening animation.
+  * `'settling'`: there was an interaction with the page scroller, and the page scroller is now finishing it's closing or opening animation.
