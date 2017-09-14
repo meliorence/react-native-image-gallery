@@ -14,10 +14,6 @@ export default class TransformableImage extends PureComponent {
         style: ViewPropTypes ? ViewPropTypes.style : View.propTypes.style,
         onLoad: PropTypes.func,
         onLoadStart: PropTypes.func,
-        dimensions: PropTypes.shape({
-            width: PropTypes.number,
-            height: PropTypes.number
-        }),
         enableTransform: PropTypes.bool,
         enableScale: PropTypes.bool,
         enableTranslate: PropTypes.bool,

@@ -1,8 +1,8 @@
 import React, { PureComponent, PropTypes } from 'react';
 import { View, ViewPropTypes } from 'react-native';
 import { createResponder } from 'react-native-gesture-responder';
-import TransformableImage from './TransformableImage';
-import ViewPager from './ViewPager';
+import TransformableImage from './libraries/TransformableImage';
+import ViewPager from './libraries/ViewPager';
 
 export default class Gallery extends PureComponent {
     static propTypes = {
@@ -218,7 +218,6 @@ export default class Gallery extends PureComponent {
     }
 
     renderPage (pageData, pageId) {
-        console.log('pageData rendered', pageData);
         const { onViewTransformed, onTransformGestureReleased, errorComponent, imageComponent } = this.props;
         return (
             <TransformableImage
