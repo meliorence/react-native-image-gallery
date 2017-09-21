@@ -18,7 +18,8 @@ export default class ViewPager extends PureComponent {
         removeClippedSubviews: PropTypes.bool,
         onPageSelected: PropTypes.func,
         onPageScrollStateChanged: PropTypes.func,
-        onPageScroll: PropTypes.func
+        onPageScroll: PropTypes.func,
+        flatListProps: PropTypes.object,
     };
 
     static defaultProps = {
@@ -27,7 +28,8 @@ export default class ViewPager extends PureComponent {
         scrollEnabled: true,
         pageDataArray: [],
         initialListSize: 10,
-        removeClippedSubviews: true
+        removeClippedSubviews: true,
+        flatListProps: {},
     };
 
     pageCount = 0; // Initialize to avoid undefined error
@@ -255,6 +257,7 @@ export default class ViewPager extends PureComponent {
               style={[style, { flex: 1 }]}
               {...gestureResponder}>
                 <FlatList
+                  {...this.props.flatListProps}
                   style={[{ flex: 1 }, scrollViewStyle]}
                   ref={'innerFlatList'}
                   keyExtractor={this.keyExtractor}

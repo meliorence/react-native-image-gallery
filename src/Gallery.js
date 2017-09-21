@@ -19,13 +19,17 @@ export default class Gallery extends PureComponent {
         onLongPress: PropTypes.func,
         removeClippedSubviews: PropTypes.bool,
         imageComponent: PropTypes.func,
-        errorComponent: PropTypes.func
+        errorComponent: PropTypes.func,
+        flatListProps: PropTypes.object,
     };
 
     static defaultProps = {
         removeClippedSubviews: true,
         imageComponent: undefined,
-        scrollViewStyle: {}
+        scrollViewStyle: {},
+        flatListProps: {
+            windowSize: 3,
+        }
     };
 
     imageRefs = new Map();
