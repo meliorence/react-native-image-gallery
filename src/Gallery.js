@@ -267,7 +267,7 @@ export default class Gallery extends PureComponent {
             gestureResponder = {};
         }
 
-        const flatListProps = Object.assign(DEFAULT_FLAT_LIST_PROPS, this.props.flatListProps)
+        const flatListProps = {...DEFAULT_FLAT_LIST_PROPS, ...this.props.flatListProps};
 
         return (
             <ViewPager
