@@ -66,11 +66,12 @@ Prop | Description | Type | Default
 `initialPage` | Image displayed first | `number` | `0`
 `imageComponent` | Custom function to render your images, 1st param is the image props, 2nd is its dimensions | `function` | `<Image>` component
 `errorComponent` | Custom function to render the page of an image that couldn't be displayed | `function` | A `<View>` with a stylized error
+`flatListProps` | Props to be passed to the underlying `FlatList` | `object` | `{windowSize: 3}`
 `pageMargin` | Blank space to show between images | `number` | `0`
 `onPageSelected` | Fired with the index of page that has been selected | `function`
 `onPageScrollStateChanged` | Called when page scrolling state has changed, see [scroll state and events](#scroll-state-and-events) | `function`
 `onPageScroll` | Scroll event, see [scroll state and events](#scroll-state-and-events) | `function`
-`scrollViewStyle` | Custom style for the `FlastList` component | `object` | `{}`
+`scrollViewStyle` | Custom style for the `FlatList` component | `object` | `{}`
 `onSingleTapConfirmed` | Fired after a single tap | `function`
 `onLongPress` | Fire after a long press | `function`
 
