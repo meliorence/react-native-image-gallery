@@ -1,5 +1,5 @@
 import React, { PropTypes, PureComponent } from 'react';
-import { View, FlatList, ViewPropTypes } from 'react-native';
+import { View, FlatList, ViewPropTypes, InteractionManager } from 'react-native';
 import Scroller from 'react-native-scroller';
 import { createResponder } from 'react-native-gesture-responder';
 
@@ -34,12 +34,12 @@ export default class ViewPager extends PureComponent {
 
     currentPage = undefined; // Do not initialize to make onPageSelected(0) be dispatched
     layoutChanged = false;
-    initialPageSettled = false;
     activeGesture = false;
     gestureResponder = undefined;
 
     state = {
-        initialPageSettled: false,
+        width: 0,
+        height: 0
     }
 
     constructor (props) {
@@ -51,8 +51,6 @@ export default class ViewPager extends PureComponent {
         this.onResponderMove = this.onResponderMove.bind(this);
         this.onResponderRelease = this.onResponderRelease.bind(this);
         this.getItemLayout = this.getItemLayout.bind(this);
-
-        this.state = { width: 0, height: 0 };
 
         this.scroller = this.createScroller();
     }
@@ -92,18 +90,11 @@ export default class ViewPager extends PureComponent {
     }
 
     componentDidMount () {
-        if (!this.initialPageSettled) {
-            this.initialPageSettled = true;
-            this.scrollToPage(this.props.initialPage, true);
-            this.setState({initialPageSettled: true});
-        }
+        this.scrollToPage(this.props.initialPage, true);
     }
 
     componentDidUpdate (prevProps) {
-        if (!this.initialPageSettled) {
-            console.log('updated and this.initialPageSettled = false')
-            // Skip...? FIXME
-        } else if (this.layoutChanged) {
+        if (this.layoutChanged) {
             this.layoutChanged = false;
             if (typeof this.currentPage === 'number') {
                 this.scrollToPage(this.currentPage, true);
@@ -169,7 +160,9 @@ export default class ViewPager extends PureComponent {
     }
 
     getScrollOffsetOfPage (page) {
-        return this.getItemLayout(this.props.pageDataArray, page).offset;
+        const itemLayout = this.getItemLayout(this.props.pageDataArray, page);
+        console.log(itemLayout.offset);
+        return itemLayout.offset;
     }
 
     flingToPage (page, velocityX) {
@@ -191,12 +184,11 @@ export default class ViewPager extends PureComponent {
 
         const finalX = this.getScrollOffsetOfPage(page);
         if (immediate) {
-            console.log('immediate scroll to ', this.scroller.getCurrX(), 0, finalX - this.scroller.getCurrX(), 0, 0);
-            this.scroller.startScroll(this.scroller.getCurrX(), 0, finalX - this.scroller.getCurrX(), 0, 0);
-            setTimeout(() => {
-                console.log('recordInteraction');
+            InteractionManager.runAfterInteractions(() => {
+                this.scroller.startScroll(this.scroller.getCurrX(), 0, finalX - this.scroller.getCurrX(), 0, 0);
+                this.refs['innerFlatList'].scrollToOffset({offset: finalX, animated: false});
                 this.refs['innerFlatList'].recordInteraction();
-            }, 100);
+            });
         } else {
             this.scroller.startScroll(this.scroller.getCurrX(), 0, finalX - this.scroller.getCurrX(), 0, 400);
         }
@@ -246,7 +238,7 @@ export default class ViewPager extends PureComponent {
         const layout = {
             width,
             height,
-            position: 'relative'
+            position: 'relative',
         };
         const style = page.props.style ? [page.props.style, layout] : layout;
 
@@ -260,7 +252,7 @@ export default class ViewPager extends PureComponent {
                 <View style={{
                     width: width + this.props.pageMargin,
                     height: height,
-                    alignItems: 'flex-end'
+                    alignItems: 'flex-end',
                 }}>
                     { element }
                 </View>
@@ -301,8 +293,7 @@ export default class ViewPager extends PureComponent {
                   data={pageDataArray}
                   renderItem={this.renderRow}
                   onLayout={this.onLayout}
-                  removeClippedSubviews={removeClippedSubviews}
-                  initialNumToRender={ initialListSize }
+                  initialNumToRender={pageDataArray.length}
                   getItemLayout={this.getItemLayout}
                   initialScrollIndex={(this.props.initialPage || undefined)}
                   extraData={this.state}
