@@ -160,9 +160,7 @@ export default class ViewPager extends PureComponent {
     }
 
     getScrollOffsetOfPage (page) {
-        const itemLayout = this.getItemLayout(this.props.pageDataArray, page);
-        console.log(itemLayout.offset);
-        return itemLayout.offset;
+        return this.getItemLayout(this.props.pageDataArray, page).offset;
     }
 
     flingToPage (page, velocityX) {
@@ -293,10 +291,8 @@ export default class ViewPager extends PureComponent {
                   data={pageDataArray}
                   renderItem={this.renderRow}
                   onLayout={this.onLayout}
-                  initialNumToRender={pageDataArray.length}
                   getItemLayout={this.getItemLayout}
                   initialScrollIndex={(this.props.initialPage || undefined)}
-                  extraData={this.state}
               />
             </View>
         );
