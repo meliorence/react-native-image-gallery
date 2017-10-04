@@ -132,6 +132,17 @@ export default class ViewPager extends PureComponent {
         }
     }
 
+    onPageChanged (page) {
+        if (this.currentPage !== page) {
+            this.currentPage = page;
+            this.props.onPageSelected && this.props.onPageSelected(page);
+        }
+    }
+
+    onPageScrollStateChanged (state) {
+        this.props.onPageScrollStateChanged && this.props.onPageScrollStateChanged(state);
+    }
+
     settlePage (vx) {
         if (vx < -MIN_FLING_VELOCITY) {
             if (this.currentPage < this.props.pageDataArray.length - 1) {
@@ -190,17 +201,6 @@ export default class ViewPager extends PureComponent {
         } else {
             this.scroller.startScroll(this.scroller.getCurrX(), 0, finalX - this.scroller.getCurrX(), 0, 400);
         }
-    }
-
-    onPageChanged (page) {
-        if (this.currentPage !== page) {
-            this.currentPage = page;
-            this.props.onPageSelected && this.props.onPageSelected(page);
-        }
-    }
-
-    onPageScrollStateChanged (state) {
-        this.props.onPageScrollStateChanged && this.props.onPageScrollStateChanged(state);
     }
 
     scrollByOffset (dx) {
