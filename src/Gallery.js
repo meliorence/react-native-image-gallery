@@ -5,7 +5,7 @@ import TransformableImage from './libraries/TransformableImage';
 import ViewPager from './libraries/ViewPager';
 
 const DEFAULT_FLAT_LIST_PROPS = {
-    windowSize: 3,
+    windowSize: 3
 };
 
 export default class Gallery extends PureComponent {
@@ -24,14 +24,14 @@ export default class Gallery extends PureComponent {
         removeClippedSubviews: PropTypes.bool,
         imageComponent: PropTypes.func,
         errorComponent: PropTypes.func,
-        flatListProps: PropTypes.object,
+        flatListProps: PropTypes.object
     };
 
     static defaultProps = {
         removeClippedSubviews: true,
         imageComponent: undefined,
         scrollViewStyle: {},
-        flatListProps: DEFAULT_FLAT_LIST_PROPS,
+        flatListProps: DEFAULT_FLAT_LIST_PROPS
     };
 
     imageRefs = new Map();

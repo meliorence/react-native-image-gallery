@@ -1,9 +1,19 @@
 import React, { PropTypes, PureComponent } from 'react';
-import { View, FlatList, ViewPropTypes } from 'react-native';
+import {
+    View,
+    FlatList,
+    ViewPropTypes,
+    InteractionManager,
+    Dimensions
+} from 'react-native';
 import Scroller from 'react-native-scroller';
 import { createResponder } from 'react-native-gesture-responder';
 
 const MIN_FLING_VELOCITY = 0.5;
+
+// Dimensions are only used initially.
+// onLayout should handle orientation swap.
+const { width, height } = Dimensions.get('window');
 
 export default class ViewPager extends PureComponent {
     static propTypes = {
@@ -19,7 +29,7 @@ export default class ViewPager extends PureComponent {
         onPageSelected: PropTypes.func,
         onPageScrollStateChanged: PropTypes.func,
         onPageScroll: PropTypes.func,
-        flatListProps: PropTypes.object,
+        flatListProps: PropTypes.object
     };
 
     static defaultProps = {
@@ -29,15 +39,15 @@ export default class ViewPager extends PureComponent {
         pageDataArray: [],
         initialListSize: 10,
         removeClippedSubviews: true,
-        flatListProps: {},
+        flatListProps: {}
     };
 
-    pageCount = 0; // Initialize to avoid undefined error
     currentPage = undefined; // Do not initialize to make onPageSelected(0) be dispatched
     layoutChanged = false;
-    initialPageSettled = false;
     activeGesture = false;
     gestureResponder = undefined;
+
+    state = { width, height };
 
     constructor (props) {
         super(props);
@@ -47,10 +57,13 @@ export default class ViewPager extends PureComponent {
         this.onResponderGrant = this.onResponderGrant.bind(this);
         this.onResponderMove = this.onResponderMove.bind(this);
         this.onResponderRelease = this.onResponderRelease.bind(this);
+        this.getItemLayout = this.getItemLayout.bind(this);
 
-        this.state = { width: 0, height: 0 };
+        this.scroller = this.createScroller();
+    }
 
-        this.scroller = new Scroller(true, (dx, dy, scroller) => {
+    createScroller () {
+        return new Scroller(true, (dx, dy, scroller) => {
             if (dx === 0 && dy === 0 && scroller.isFinished()) {
                 if (!this.activeGesture) {
                     this.onPageScrollStateChanged('idle');
@@ -83,8 +96,33 @@ export default class ViewPager extends PureComponent {
         });
     }
 
+    componentDidMount () {
+        // FlatList is set to render at initialPage.
+        // The scroller we use is not aware of this.
+        // Let it know by simulating most of what happens in scrollToPage()
+        this.onPageScrollStateChanged('settling');
+
+        const page = this.validPage(this.props.initialPage);
+        this.onPageChanged(page);
+
+        const finalX = this.getScrollOffsetOfPage(page);
+        this.scroller.startScroll(this.scroller.getCurrX(), 0, finalX - this.scroller.getCurrX(), 0, 0);
+    }
+
+    componentDidUpdate (prevProps) {
+        if (this.layoutChanged) {
+            this.layoutChanged = false;
+            if (typeof this.currentPage === 'number') {
+                this.scrollToPage(this.currentPage, true);
+            }
+        } else if (this.currentPage + 1 >= this.props.pageDataArray.length &&
+            this.props.pageDataArray.length !== prevProps.pageDataArray.length) {
+            this.scrollToPage(this.props.pageDataArray.length, true);
+        }
+    }
+
     onLayout (e) {
-        let {width, height} = e.nativeEvent.layout;
+        let { width, height } = e.nativeEvent.layout;
         let sizeChanged = this.state.width !== width || this.state.height !== height;
         if (width && height && sizeChanged) {
             this.layoutChanged = true;
@@ -92,23 +130,8 @@ export default class ViewPager extends PureComponent {
         }
     }
 
-    componentDidUpdate (prevProps) {
-        if (!this.initialPageSettled) {
-            this.initialPageSettled = true;
-            this.scrollToPage(this.props.initialPage, true);
-        } else if (this.layoutChanged) {
-            this.layoutChanged = false;
-            if (typeof this.currentPage === 'number') {
-                this.scrollToPage(this.currentPage, true);
-            }
-        } else if (this.currentPage + 1 >= this.props.images.length &&
-            this.props.images.length !== prevProps.images.length) {
-            this.scrollToPage(this.props.images.length, true);
-        }
-    }
-
     onResponderGrant (evt, gestureState) {
-        this.scroller.forceFinished(true);
+        // this.scroller.forceFinished(true);
         this.activeGesture = true;
         this.onPageScrollStateChanged('dragging');
     }
@@ -125,12 +148,25 @@ export default class ViewPager extends PureComponent {
         }
     }
 
+    onPageChanged (page) {
+        if (this.currentPage !== page) {
+            this.currentPage = page;
+            this.props.onPageSelected && this.props.onPageSelected(page);
+        }
+    }
+
+    onPageScrollStateChanged (state) {
+        this.props.onPageScrollStateChanged && this.props.onPageScrollStateChanged(state);
+    }
+
     settlePage (vx) {
+        const { pageDataArray } = this.props;
+
         if (vx < -MIN_FLING_VELOCITY) {
-            if (this.currentPage < this.pageCount - 1) {
+            if (this.currentPage < pageDataArray.length - 1) {
                 this.flingToPage(this.currentPage + 1, vx);
             } else {
-                this.flingToPage(this.pageCount - 1, vx);
+                this.flingToPage(pageDataArray.length - 1, vx);
             }
         } else if (vx > MIN_FLING_VELOCITY) {
             if (this.currentPage > 0) {
@@ -146,14 +182,14 @@ export default class ViewPager extends PureComponent {
             } else if (progress < -1 / 3) {
                 page -= 1;
             }
-            page = Math.min(this.pageCount - 1, page);
+            page = Math.min(pageDataArray.length - 1, page);
             page = Math.max(0, page);
             this.scrollToPage(page);
         }
     }
 
     getScrollOffsetOfPage (page) {
-        return page * (this.state.width + this.props.pageMargin);
+        return this.getItemLayout(this.props.pageDataArray, page).offset;
     }
 
     flingToPage (page, velocityX) {
@@ -175,21 +211,14 @@ export default class ViewPager extends PureComponent {
 
         const finalX = this.getScrollOffsetOfPage(page);
         if (immediate) {
-            this.scroller.startScroll(this.scroller.getCurrX(), 0, finalX - this.scroller.getCurrX(), 0, 0);
+            InteractionManager.runAfterInteractions(() => {
+                this.scroller.startScroll(this.scroller.getCurrX(), 0, finalX - this.scroller.getCurrX(), 0, 0);
+                this.refs['innerFlatList'].scrollToOffset({offset: finalX, animated: false});
+                this.refs['innerFlatList'].recordInteraction();
+            });
         } else {
             this.scroller.startScroll(this.scroller.getCurrX(), 0, finalX - this.scroller.getCurrX(), 0, 400);
         }
-    }
-
-    onPageChanged (page) {
-        if (this.currentPage !== page) {
-            this.currentPage = page;
-            this.props.onPageSelected && this.props.onPageSelected(page);
-        }
-    }
-
-    onPageScrollStateChanged (state) {
-        this.props.onPageScrollStateChanged && this.props.onPageScrollStateChanged(state);
     }
 
     scrollByOffset (dx) {
@@ -197,7 +226,7 @@ export default class ViewPager extends PureComponent {
     }
 
     validPage (page) {
-        page = Math.min(this.pageCount - 1, page);
+        page = Math.min(this.props.pageDataArray.length - 1, page);
         page = Math.max(0, page);
         return page;
     }
@@ -206,26 +235,41 @@ export default class ViewPager extends PureComponent {
         return this.scroller.getCurrX() - this.getScrollOffsetOfPage(this.currentPage);
     }
 
+    getItemLayout (data, index) {
+        return {
+            length: this.state.width + this.props.pageMargin,
+            offset: (this.state.width + this.props.pageMargin) * index,
+            index
+        };
+    }
+
     keyExtractor (item, index) {
         return index;
     }
 
     renderRow ({ item, index }) {
         const { width, height } = this.state;
-        const { renderPage, pageMargin } = this.props;
-        let page = renderPage(item, index);
+        let page = this.props.renderPage(item, index);
 
-        const layout = { width: width, height: height, position: 'relative' };
+        const layout = {
+            width,
+            height,
+            position: 'relative'
+        };
         const style = page.props.style ? [page.props.style, layout] : layout;
 
         let newProps = { ...page.props, ref: page.ref, style };
         const element = React.createElement(page.type, newProps);
 
-        if (pageMargin > 0 && index > 0) {
+        if (this.props.pageMargin > 0 && index > 0) {
             // Do not using margin style to implement pageMargin.
             // The ListView seems to calculate a wrong width for children views with margin.
             return (
-                <View style={{ width: width + pageMargin, height: height, alignItems: 'flex-end' }}>
+                <View style={{
+                    width: width + this.props.pageMargin,
+                    height: height,
+                    alignItems: 'flex-end'
+                }}>
                     { element }
                 </View>
             );
@@ -236,18 +280,17 @@ export default class ViewPager extends PureComponent {
 
     render () {
         const { width, height } = this.state;
-        const { pageDataArray, scrollEnabled, style, removeClippedSubviews, initialListSize, scrollViewStyle } = this.props;
+        const { pageDataArray, scrollEnabled, style, scrollViewStyle } = this.props;
 
         if (width && height) {
             let list = pageDataArray;
             if (!list) {
                 list = [];
             }
-            this.pageCount = list.length;
         }
 
         let gestureResponder = this.gestureResponder;
-        if (!scrollEnabled || this.pageCount <= 0) {
+        if (!scrollEnabled || pageDataArray.length <= 0) {
             gestureResponder = {};
         }
 
@@ -266,8 +309,8 @@ export default class ViewPager extends PureComponent {
                   data={pageDataArray}
                   renderItem={this.renderRow}
                   onLayout={this.onLayout}
-                  removeClippedSubviews={removeClippedSubviews}
-                  initialListSize={ initialListSize }
+                  getItemLayout={this.getItemLayout}
+                  initialScrollIndex={(this.props.initialPage || undefined)}
               />
             </View>
         );
