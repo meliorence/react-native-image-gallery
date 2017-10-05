@@ -1,9 +1,19 @@
 import React, { PropTypes, PureComponent } from 'react';
-import { View, FlatList, ViewPropTypes, InteractionManager } from 'react-native';
+import {
+    View,
+    FlatList,
+    ViewPropTypes,
+    InteractionManager,
+    Dimensions
+} from 'react-native';
 import Scroller from 'react-native-scroller';
 import { createResponder } from 'react-native-gesture-responder';
 
 const MIN_FLING_VELOCITY = 0.5;
+
+// Dimensions are only used initially.
+// onLayout should handle orientation swap.
+const {width, height} = Dimensions.get('window');
 
 export default class ViewPager extends PureComponent {
     static propTypes = {
@@ -38,8 +48,8 @@ export default class ViewPager extends PureComponent {
     gestureResponder = undefined;
 
     state = {
-        width: 0,
-        height: 0
+        width,
+        height,
     }
 
     constructor (props) {
@@ -90,7 +100,16 @@ export default class ViewPager extends PureComponent {
     }
 
     componentDidMount () {
-        this.scrollToPage(this.props.initialPage, true);
+        // FlatList is set to render at initialPage.
+        // The scroller we use is not aware of this.
+        // Let it know by simulating most of what happens in scrollToPage()
+        this.onPageScrollStateChanged('settling');
+
+        const page = this.validPage(this.props.initialPage);
+        this.onPageChanged(page);
+
+        const finalX = this.getScrollOffsetOfPage(page);
+        this.scroller.startScroll(this.scroller.getCurrX(), 0, finalX - this.scroller.getCurrX(), 0, 0);
     }
 
     componentDidUpdate (prevProps) {
