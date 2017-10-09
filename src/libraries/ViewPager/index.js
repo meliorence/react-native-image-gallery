@@ -1,4 +1,4 @@
-import React, { PropTypes, PureComponent } from 'react';
+import React, { PureComponent } from 'react';
 import {
     View,
     FlatList,
@@ -6,6 +6,7 @@ import {
     InteractionManager,
     Dimensions
 } from 'react-native';
+import PropTypes from 'prop-types';
 import Scroller from 'react-native-scroller';
 import { createResponder } from 'react-native-gesture-responder';
 
