@@ -163,6 +163,7 @@ export default class TransformableImage extends PureComponent {
 
         const imageProps = {
             ...this.props,
+            imageLoaded,
             source: image.source,
             style: [style, { backgroundColor: 'transparent' }],
             resizeMode: resizeMode,
