@@ -214,8 +214,8 @@ export default class ViewPager extends PureComponent {
         if (immediate) {
             InteractionManager.runAfterInteractions(() => {
                 this.scroller.startScroll(this.scroller.getCurrX(), 0, finalX - this.scroller.getCurrX(), 0, 0);
-                this.refs['innerFlatList'].scrollToOffset({offset: finalX, animated: false});
-                this.refs['innerFlatList'].recordInteraction();
+                this.refs['innerFlatList'] && this.refs['innerFlatList'].scrollToOffset({offset: finalX, animated: false});
+                this.refs['innerFlatList'] && this.refs['innerFlatList'].recordInteraction();
             });
         } else {
             this.scroller.startScroll(this.scroller.getCurrX(), 0, finalX - this.scroller.getCurrX(), 0, 400);
