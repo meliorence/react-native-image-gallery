@@ -97,6 +97,7 @@ export default class TransformableImage extends PureComponent {
     }
 
     getImageSize (image) {
+        return;
         if (!image) {
             return;
         }

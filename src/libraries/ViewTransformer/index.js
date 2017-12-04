@@ -155,7 +155,7 @@ export default class ViewTransformer extends React.Component {
         if (width !== this.state.width || height !== this.state.height) {
             this.setState({width, height});
         }
-        this.measureLayout();
+        // this.measureLayout();
 
         this.props.onLayout && this.props.onLayout(e);
     }
