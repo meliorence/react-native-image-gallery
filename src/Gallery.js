@@ -21,6 +21,7 @@ export default class Gallery extends PureComponent {
         onPageScroll: PropTypes.func,
         onSingleTapConfirmed: PropTypes.func,
         onGalleryStateChanged: PropTypes.func,
+        onSwipeVertical: PropTypes.func,
         onLongPress: PropTypes.func,
         removeClippedSubviews: PropTypes.bool,
         imageComponent: PropTypes.func,
@@ -102,6 +103,11 @@ export default class Gallery extends PureComponent {
                     }
                 }
                 this.activeResponder.onMove(evt, gestureState);
+                
+                const dy = gestureState.moveY - gestureState.previousMoveY;
+                if (Math.abs(dy) > 100) {
+                    this.props.onSwipeVertical && this.props.onSwipeVertical(this.currentPage)
+                }
             },
             onResponderRelease: onResponderReleaseOrTerminate,
             onResponderTerminate: onResponderReleaseOrTerminate,
