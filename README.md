@@ -10,7 +10,7 @@
     - [Props](#props)
     - [Scroll state and events](#scroll-state-and-events)
 
->This used to be a fork of [ldn0x7dc/react-native-gallery](https://github.com/ldn0x7dc/react-native-gallery) but the original repo is no longer maintained, so here's our own repo. Props to [ldn0x7dc](https://github.com/ldn0x7dc) for his amazing work!
+>This used to be a fork of [ldn0x7dc/react-native-gallery](https://github.com/ldn0x7dc/react-native-gallery) but the original repo is no longer maintained, so here's our own repo. Props to [ldn0x7dc](https://github.com/ldn0x7dc) for his amazing work! 👏👏👏
 
 A pure JavaScript image gallery component for React Native apps with common gestures like pan, pinch and doubleTap, supporting both iOS and Android.
 
