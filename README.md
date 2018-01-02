@@ -10,14 +10,14 @@
     - [Props](#props)
     - [Scroll state and events](#scroll-state-and-events)
 
->This used to be a fork of [ldn0x7dc/react-native-gallery](https://github.com/ldn0x7dc/react-native-gallery) but since the author has stopped maintaining it, here's our own repo. Props to him for his work !
+>This used to be a fork of [ldn0x7dc/react-native-gallery](https://github.com/ldn0x7dc/react-native-gallery) but the original repo is no longer maintained, so here's our own repo. Props to [ldn0x7dc](https://github.com/ldn0x7dc) for his amazing work! 👏👏👏
 
-A pure JavaScript image gallery component for react-native apps with common gestures like pan, pinch and doubleTap, supporting both iOS and Android.
+A pure JavaScript image gallery component for React Native apps with common gestures like pan, pinch and doubleTap, supporting both iOS and Android.
 
-This component aims to be (one of) the best image viewer for react-native apps. Comparing with other gallery alike components, this one should be more elegant in following aspects: (mimics iOS system photo album app).
+This component aims to be the best image viewer for React Native apps, it is far more elegant than other gallery-like components as it features some of the most useful functionalities found in the iOS photo album app such as:
 
-* Gesture handle: besides common pan, pinch and doubleTap, this component does well in targeting foucs point( or pivot) when zoom-in and zoom-out.
-* Responder switch: the gesture responder switch is more flexible than any other component, that is, the scrollable container and the wrapped image children perform well in acquiring and releasing gesture responder from/to each other.
+* Gesture handling - other than the common pan, pinch and doubleTap gestures, this component also performs efficiently when targeting focus point (also known as pivot) on zoom-in and zoom-out.
+* Responder switch - the gesture responder switch is far more flexible than any other component, that is, the scrollable container and the wrapped image children perform well in acquiring and releasing gesture responder from/to each other.
 
 This component utilizes **[@ldn0x7dc/react-native-view-pager](https://github.com/ldn0x7dc/react-native-view-pager)** as the scrollable container and **[react-native-transformable-image](https://github.com/ldn0x7dc/react-native-transformable-image)** as the wrapped image. 
 
@@ -54,9 +54,9 @@ import Gallery from 'react-native-image-gallery';
 
 ## Remote and local images
 
-You can now use either a remote image, by specifying `source.uri`, or a local image where `source` is the result of your `require()`.
+This component supports both remote images by specifying `source.uri`, and local images where `source` is the result of `require()`.
 
-**Be aware that you need to pass the dimensions of your local images ! It's still not required for remotes images**, although you can still provide their dimensions to prevent the gallery from fetching their height and width online, which can improve the perfs a bit.
+**Be aware that the width and height must be defined for local images, but is not required for remote images!** Although the dimensions could still be provided for remote images to save the gallery from fetching them, which could potentially improve performance.
 
 ## Props
 
@@ -73,7 +73,7 @@ Prop | Description | Type | Default
 `onPageScroll` | Scroll event, see [scroll state and events](#scroll-state-and-events) | `function`
 `scrollViewStyle` | Custom style for the `FlatList` component | `object` | `{}`
 `onSingleTapConfirmed` | Fired after a single tap | `function`
-`onLongPress` | Fire after a long press | `function`
+`onLongPress` | Fired after a long press | `function`
 
 ## Scroll state and events
 
@@ -91,4 +91,4 @@ Prop | Description | Type | Default
 
   * `'idle'`: there is no interaction with the page scroller happening at the time.
   * `'dragging'`: there is currently an interaction with the page scroller.
-  * `'settling'`: there was an interaction with the page scroller, and the page scroller is now finishing it's closing or opening animation.
+  * `'settling'`: there was an interaction with the page scroller, and the page scroller is now finishing its closing or opening animation.
