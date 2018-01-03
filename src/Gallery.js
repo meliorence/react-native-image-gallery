@@ -73,6 +73,7 @@ export default class Gallery extends PureComponent {
             }
             this.firstMove = true;
             this.swipeDistance = 0;
+            this.props.onSwipeVertical && this.props.onSwipeVertical(this.currentPage, 0);
             this.props.onGalleryStateChanged && this.props.onGalleryStateChanged(true);
         };
 
