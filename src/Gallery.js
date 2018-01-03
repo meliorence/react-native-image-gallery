@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { View, ViewPropTypes } from 'react-native';
+import { Dimensions, View, ViewPropTypes } from 'react-native';
 import PropTypes from 'prop-types';
 import { createResponder } from 'react-native-gesture-responder';
 import TransformableImage from './libraries/TransformableImage';
@@ -41,6 +41,8 @@ export default class Gallery extends PureComponent {
     firstMove = true;
     currentPage = 0;
     pageCount = 0;
+    swipeDistance = 0;
+    maxSwipeDistance = 0;
     gestureResponder = undefined;
 
     constructor (props) {
@@ -70,8 +72,11 @@ export default class Gallery extends PureComponent {
                 this.activeResponder = null;
             }
             this.firstMove = true;
+            this.swipeDistance = 0;
             this.props.onGalleryStateChanged && this.props.onGalleryStateChanged(true);
         };
+
+        let previous_value = 0;
 
         this.gestureResponder = createResponder({
             onStartShouldSetResponderCapture: (evt, gestureState) => true,
@@ -103,11 +108,13 @@ export default class Gallery extends PureComponent {
                     }
                 }
                 this.activeResponder.onMove(evt, gestureState);
-                
-                const dy = gestureState.moveY - gestureState.previousMoveY;
-                if (Math.abs(dy) > 100) {
-                    this.props.onSwipeVertical && this.props.onSwipeVertical(this.currentPage)
+
+                this.swipeDistance += gestureState.moveY - gestureState.previousMoveY;
+                let value = Math.floor(100 * (this.swipeDistance / this.maxSwipeDistance));
+                if (value != previous_value) {
+                    this.props.onSwipeVertical && this.props.onSwipeVertical(this.currentPage, value);
                 }
+                previous_value = value;
             },
             onResponderRelease: onResponderReleaseOrTerminate,
             onResponderTerminate: onResponderReleaseOrTerminate,
@@ -138,6 +145,9 @@ export default class Gallery extends PureComponent {
                         this.props.onLongPress(gestureState);
                     }, 600);
                 }
+
+                // user can swipe up or down - cannot cache because user might rotate device
+                this.maxSwipeDistance = Math.floor(Dimensions.get('window').height / 2);
             },
             onMove: (evt, gestureState) => {
                 const currentImageTransformer = this.getCurrentImageTransformer();
