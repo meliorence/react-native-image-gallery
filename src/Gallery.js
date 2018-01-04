@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { View, ViewPropTypes } from 'react-native';
 import PropTypes from 'prop-types';
-import { createResponder } from 'react-native-gesture-responder';
+import { createResponder } from './libraries/GestureResponder';
 import TransformableImage from './libraries/TransformableImage';
 import ViewPager from './libraries/ViewPager';
 
