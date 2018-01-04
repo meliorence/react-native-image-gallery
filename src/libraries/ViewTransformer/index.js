@@ -50,7 +50,7 @@ export default class ViewTransformer extends React.Component {
             pageY: 0
         };
         this._viewPortRect = new Rect(); // A holder to avoid new too much
-        
+
         this.onLayout = this.onLayout.bind(this);
         this.cancelAnimation = this.cancelAnimation.bind(this);
         this.contentRect = this.contentRect.bind(this);
@@ -352,7 +352,7 @@ export default class ViewTransformer extends React.Component {
         }
 
         let fromRect = this.transformedContentRect();
-        if (fromRect.equals(targetRect)) {
+        if (fromRect.equals(targetRect, 0.01)) {
             return;
         }
 
