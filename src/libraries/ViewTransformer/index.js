@@ -294,9 +294,9 @@ export default class ViewTransformer extends React.Component {
 
         vx *= 1000; // per second
         vy *= 1000;
-        if (Math.abs(vx) > 1.5 * Math.abs(vy)) {
+        if (Math.abs(vx) > Math.abs(vy)) {
             vy = 0;
-        } else if (Math.abs(vy) > 1.5 * Math.abs(vx)) {
+        } else if (Math.abs(vy) > Math.abs(vx)) {
             vx = 0;
         }
 
