@@ -51,10 +51,10 @@ export default class Rect {
             );
         } else {
             return (
-                Math.abs(this.left - rect.left < epsilon) &&
-                Math.abs(this.top - rect.top < epsilon) &&
-                Math.abs(this.right - rect.right < epsilon) &&
-                Math.abs(this.bottom - rect.bottom < epsilon)
+                Math.abs(this.left - rect.left) < epsilon &&
+                Math.abs(this.top - rect.top) < epsilon &&
+                Math.abs(this.right - rect.right) < epsilon &&
+                Math.abs(this.bottom - rect.bottom) < epsilon
             );
         }
     }
