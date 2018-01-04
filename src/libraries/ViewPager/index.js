@@ -7,8 +7,8 @@ import {
     Dimensions
 } from 'react-native';
 import PropTypes from 'prop-types';
-import Scroller from 'react-native-scroller';
-import { createResponder } from 'react-native-gesture-responder';
+import Scroller from '../Scroller';
+import { createResponder } from '../GestureResponder';
 
 const MIN_FLING_VELOCITY = 0.5;
 

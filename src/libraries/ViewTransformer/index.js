@@ -1,8 +1,8 @@
 import React from 'react';
 import ReactNative, { View, Animated, Easing, NativeModules } from 'react-native';
-import Scroller from 'react-native-scroller';
+import Scroller from '../Scroller';
 import PropTypes from 'prop-types';
-import { createResponder } from 'react-native-gesture-responder';
+import { createResponder } from '../GestureResponder';
 import { Rect, Transform, transformedRect, availableTranslateSpace, fitCenterRect, alignedRect, getTransform } from './TransformUtils';
 
 export default class ViewTransformer extends React.Component {
