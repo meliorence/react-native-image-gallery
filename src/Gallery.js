@@ -67,6 +67,9 @@ export default class Gallery extends PureComponent {
                 } else {
                     this.activeResponder.onEnd(evt, gestureState);
                 }
+                if (this.activeResponder !== this.viewPagerResponder) {
+                    this.viewPagerResponder.onEnd(evt, gestureState);
+                }
                 this.activeResponder = null;
             }
             this.firstMove = true;
@@ -104,8 +107,11 @@ export default class Gallery extends PureComponent {
                         }
                     }
                 }
-                this.imageResponder.onMove(evt, gestureState);
-                this.activeResponder.onMove(evt, gestureState);
+                if (Math.abs(gestureState.dy) > Math.abs(gestureState.dx)) {
+                    this.activeResponder = this.imageResponder
+                }
+
+                this.activeResponder.onMove(evt, gestureState)
             },
             onResponderRelease: onResponderReleaseOrTerminate,
             onResponderTerminate: onResponderReleaseOrTerminate,
