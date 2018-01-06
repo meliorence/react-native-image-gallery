@@ -81,6 +81,7 @@ export default class Gallery extends PureComponent {
             onResponderMove: (evt, gestureState) => {
                 if (this.firstMove) {
                     this.firstMove = false;
+
                     if (this.shouldScrollViewPager(evt, gestureState)) {
                         this.activeViewPagerResponder(evt, gestureState);
                     }
@@ -103,6 +104,7 @@ export default class Gallery extends PureComponent {
                         }
                     }
                 }
+                this.imageResponder.onMove(evt, gestureState);
                 this.activeResponder.onMove(evt, gestureState);
             },
             onResponderRelease: onResponderReleaseOrTerminate,
