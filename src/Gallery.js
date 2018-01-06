@@ -21,6 +21,7 @@ export default class Gallery extends PureComponent {
         onPageScroll: PropTypes.func,
         onSingleTapConfirmed: PropTypes.func,
         onGalleryStateChanged: PropTypes.func,
+        onViewTransforming: PropTypes.func,
         onLongPress: PropTypes.func,
         removeClippedSubviews: PropTypes.bool,
         imageComponent: PropTypes.func,
@@ -66,9 +67,13 @@ export default class Gallery extends PureComponent {
                 } else {
                     this.activeResponder.onEnd(evt, gestureState);
                 }
+                if (this.activeResponder !== this.viewPagerResponder) {
+                    this.viewPagerResponder.onEnd(evt, gestureState);
+                }
                 this.activeResponder = null;
             }
             this.firstMove = true;
+
             this.props.onGalleryStateChanged && this.props.onGalleryStateChanged(true);
         };
 
@@ -79,6 +84,7 @@ export default class Gallery extends PureComponent {
             onResponderMove: (evt, gestureState) => {
                 if (this.firstMove) {
                     this.firstMove = false;
+
                     if (this.shouldScrollViewPager(evt, gestureState)) {
                         this.activeViewPagerResponder(evt, gestureState);
                     }
@@ -101,7 +107,11 @@ export default class Gallery extends PureComponent {
                         }
                     }
                 }
-                this.activeResponder.onMove(evt, gestureState);
+                if (Math.abs(gestureState.dy) > Math.abs(gestureState.dx)) {
+                    this.activeResponder = this.imageResponder
+                }
+
+                this.activeResponder.onMove(evt, gestureState)
             },
             onResponderRelease: onResponderReleaseOrTerminate,
             onResponderTerminate: onResponderReleaseOrTerminate,
@@ -225,14 +235,18 @@ export default class Gallery extends PureComponent {
     }
 
     renderPage (pageData, pageId) {
-        const { onViewTransformed, onTransformGestureReleased, errorComponent, imageComponent } = this.props;
+        const { onViewTransformed, onViewTransforming, onTransformGestureReleased, errorComponent, imageComponent } = this.props;
         return (
             <TransformableImage
               onViewTransformed={((transform) => {
                   onViewTransformed && onViewTransformed(transform, pageId);
               })}
+              onViewTransforming={((transform) => {
+                  onViewTransforming && onViewTransforming(transform, pageId);
+              })}
               onTransformGestureReleased={((transform) => {
-                  onTransformGestureReleased && onTransformGestureReleased(transform, pageId);
+                  // need the 'return' here because the return value is checked in ViewTransformer
+                  return onTransformGestureReleased && onTransformGestureReleased(transform, pageId);
               })}
               ref={((ref) => { this.imageRefs.set(pageId, ref); })}
               key={'innerImage#' + pageId}

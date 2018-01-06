@@ -18,6 +18,7 @@ export default class ViewTransformer extends React.Component {
         contentAspectRatio: PropTypes.number,
         enableResistance: PropTypes.bool,
         onViewTransformed: PropTypes.func,
+        onViewTransforming: PropTypes.func,
         onTransformGestureReleased: PropTypes.func,
         onSingleTapConfirmed: PropTypes.func,
         onLayout: PropTypes.func,
@@ -207,9 +208,9 @@ export default class ViewTransformer extends React.Component {
             );
             transform = getTransform(this.contentRect(), rect);
         } else {
-            if (Math.abs(dx) > 2 * Math.abs(dy)) {
+            if (Math.abs(dx) > Math.abs(dy)) {
                 dy = 0;
-            } else if (Math.abs(dy) > 2 * Math.abs(dx)) {
+            } else if (Math.abs(dy) > Math.abs(dx)) {
                 dx = 0;
             }
             transform.translateX = this.state.translateX + dx / this.state.scale;
@@ -293,9 +294,9 @@ export default class ViewTransformer extends React.Component {
 
         vx *= 1000; // per second
         vy *= 1000;
-        if (Math.abs(vx) > 2 * Math.abs(vy)) {
+        if (Math.abs(vx) > Math.abs(vy)) {
             vy = 0;
-        } else if (Math.abs(vy) > 2 * Math.abs(vx)) {
+        } else if (Math.abs(vy) > Math.abs(vx)) {
             vx = 0;
         }
 
@@ -409,10 +410,12 @@ export default class ViewTransformer extends React.Component {
 
     updateTransform (transform) {
         this.setState(transform);
+        this.props.onViewTransforming && this.props.onViewTransforming(transform)
     }
 
     forceUpdateTransform (transform) {
         this.setState(transform);
+        this.props.onViewTransforming && this.props.onViewTransforming(transform)
     }
 
     getAvailableTranslateSpace () {
