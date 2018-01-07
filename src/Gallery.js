@@ -66,7 +66,7 @@ export default class Gallery extends PureComponent {
                     this.activeResponder.onEnd(evt, gestureState, true);
                     this.getViewPagerInstance().flingToPage(this.currentPage, gestureState.vx);
                 } else {
-                    if (Math.abs(gestureState.vy) > 0.5) {
+                    if (Math.abs(gestureState.vy) > 2) {
                         this.props.onSwipedVertical && this.props.onSwipedVertical(evt, gestureState)
                     }
                     this.activeResponder.onEnd(evt, gestureState);
