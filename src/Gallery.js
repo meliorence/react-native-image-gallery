@@ -232,7 +232,8 @@ export default class Gallery extends PureComponent {
                   onViewTransformed && onViewTransformed(transform, pageId);
               })}
               onTransformGestureReleased={((transform) => {
-                  onTransformGestureReleased && onTransformGestureReleased(transform, pageId);
+                  // need the 'return' here because the return value is checked in ViewTransformer
+                  return onTransformGestureReleased && onTransformGestureReleased(transform, pageId);
               })}
               ref={((ref) => { this.imageRefs.set(pageId, ref); })}
               key={'innerImage#' + pageId}
