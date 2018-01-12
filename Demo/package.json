@@ -9,7 +9,7 @@
 	"dependencies": {
 		"react": "16.2.0",
 		"react-native": "0.52.0",
-		"react-native-image-gallery": "2.1.4"
+		"react-native-image-gallery": "2.1.5"
 	},
 	"devDependencies": {
 		"babel-jest": "22.0.6",
