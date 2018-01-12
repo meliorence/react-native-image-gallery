@@ -1,3 +1,3 @@
 export function currentAnimationTimeMillis() {
-  return Date.now();
+    return Date.now();
 }
