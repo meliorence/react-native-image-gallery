@@ -41,8 +41,22 @@ export default class Rect {
         return new Rect(this.left, this.top, this.right, this.bottom);
     }
 
-    equals (rect) {
-        return this.left === rect.left && this.top === rect.top && this.right === rect.right && this.bottom && rect.bottom;
+    equals (rect, epsilon) {
+        if (!epsilon) {
+            return (
+                this.left === rect.left &&
+                this.top === rect.top &&
+                this.right === rect.right &&
+                this.bottom === rect.bottom
+            );
+        } else {
+            return (
+                Math.abs(this.left - rect.left) < epsilon &&
+                Math.abs(this.top - rect.top) < epsilon &&
+                Math.abs(this.right - rect.right) < epsilon &&
+                Math.abs(this.bottom - rect.bottom) < epsilon
+            );
+        }
     }
 
     isValid () {
