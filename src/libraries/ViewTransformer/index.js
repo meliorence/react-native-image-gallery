@@ -18,6 +18,7 @@ export default class ViewTransformer extends React.Component {
         contentAspectRatio: PropTypes.number,
         enableResistance: PropTypes.bool,
         onViewTransformed: PropTypes.func,
+        onViewTransforming: PropTypes.func,
         onTransformGestureReleased: PropTypes.func,
         onSingleTapConfirmed: PropTypes.func,
         onLayout: PropTypes.func,
@@ -409,10 +410,12 @@ export default class ViewTransformer extends React.Component {
 
     updateTransform (transform) {
         this.setState(transform);
+        this.props.onViewTransforming && this.props.onViewTransforming(transform)
     }
 
     forceUpdateTransform (transform) {
         this.setState(transform);
+        this.props.onViewTransforming && this.props.onViewTransforming(transform)
     }
 
     getAvailableTranslateSpace () {
