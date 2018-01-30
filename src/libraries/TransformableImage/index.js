@@ -183,7 +183,14 @@ export default class TransformableImage extends PureComponent {
             capInsets: { left: 0.1, top: 0.1, right: 0.1, bottom: 0.1 }
         };
 
-        const content = imageComponent ? imageComponent(imageProps, imageDimensions) : <Image { ...imageProps } />;
+        let content;
+        if (error) {
+            content = this.renderError(errorInfo);
+        } else if (imageComponent) {
+            content = imageComponent(imageProps, imageDimensions);
+        } else {
+            content = <Image { ...imageProps } />;
+        }
 
         return (
             <ViewTransformer
@@ -199,7 +206,7 @@ export default class TransformableImage extends PureComponent {
               contentAspectRatio={contentAspectRatio}
               onLayout={this.onLayout}
               style={style}>
-                { error ? this.renderError(errorInfo) : content }
+                { content }
             </ViewTransformer>
         );
     }
