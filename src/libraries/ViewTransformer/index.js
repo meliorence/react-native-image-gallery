@@ -109,6 +109,8 @@ export default class ViewTransformer extends React.Component {
                 this.props.onSingleTapConfirmed && this.props.onSingleTapConfirmed();
             }
         });
+
+        this._mounted = true;
     }
 
     componentDidUpdate (prevProps, prevState) {
@@ -121,6 +123,8 @@ export default class ViewTransformer extends React.Component {
 
     componentWillUnmount () {
         this.cancelAnimation();
+
+        this._mounted = false;
     }
 
     render () {
@@ -153,7 +157,7 @@ export default class ViewTransformer extends React.Component {
     onLayout (e) {
         const {width, height} = e.nativeEvent.layout;
         if (width !== this.state.width || height !== this.state.height) {
-            this.setState({width, height});
+            this._mounted && this.setState({width, height});
         }
         this.measureLayout();
 
@@ -165,7 +169,7 @@ export default class ViewTransformer extends React.Component {
         NativeModules.UIManager.measure(handle, (x, y, width, height, pageX, pageY) => {
             if (typeof pageX === 'number' && typeof pageY === 'number') { // avoid undefined values on Android devices
                 if (this.state.pageX !== pageX || this.state.pageY !== pageY) {
-                    this.setState({ pageX: pageX, pageY: pageY });
+                    this._mounted && this.setState({ pageX: pageX, pageY: pageY });
                 }
             }
         });
@@ -173,7 +177,7 @@ export default class ViewTransformer extends React.Component {
 
     onResponderGrant (evt, gestureState) {
         this.props.onTransformStart && this.props.onTransformStart();
-        this.setState({responderGranted: true});
+        this._mounted && this.setState({responderGranted: true});
         this.measureLayout();
     }
 
@@ -408,11 +412,11 @@ export default class ViewTransformer extends React.Component {
     }
 
     updateTransform (transform) {
-        this.setState(transform);
+        this._mounted && this.setState(transform);
     }
 
     forceUpdateTransform (transform) {
-        this.setState(transform);
+        this._mounted && this.setState(transform);
     }
 
     getAvailableTranslateSpace () {
