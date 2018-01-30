@@ -122,11 +122,7 @@ export default class TransformableImage extends PureComponent {
         const onImageSize = (width, height) => {
             if (width && height) {
                 TransformableImage.cachedDimensions[source.uri] = { width, height };
-                if (this.state.imageDimensions && this.state.imageDimensions.width === width && this.state.imageDimensions.height === height) {
-                    // no need to update state
-                } else {
-                    this._mounted && this.setState({ imageDimensions: TransformableImage.cachedDimensions[source.uri] });
-                }
+                this._mounted && this.setState({ imageDimensions: TransformableImage.cachedDimensions[source.uri] });
             }
         };
 
