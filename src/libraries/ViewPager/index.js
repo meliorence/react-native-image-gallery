@@ -108,14 +108,6 @@ export default class ViewPager extends PureComponent {
 
         const finalX = this.getScrollOffsetOfPage(page);
         this.scroller.startScroll(this.scroller.getCurrX(), 0, finalX - this.scroller.getCurrX(), 0, 0);
-        
-        requestAnimationFrame(() => {
-            // this is here to work around a bug in FlatList, as discussed here
-            // https://github.com/facebook/react-native/issues/1831
-            // (and solved here https://github.com/facebook/react-native/commit/03ae65bc ?)
-            this.scrollByOffset(1);
-            this.scrollByOffset(-1);
-        });
     }
 
     componentDidUpdate (prevProps) {
