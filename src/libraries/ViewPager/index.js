@@ -108,6 +108,8 @@ export default class ViewPager extends PureComponent {
 
         const finalX = this.getScrollOffsetOfPage(page);
         this.scroller.startScroll(this.scroller.getCurrX(), 0, finalX - this.scroller.getCurrX(), 0, 0);
+
+        this._mounted = true;
     }
 
     componentDidUpdate (prevProps) {
@@ -122,12 +124,16 @@ export default class ViewPager extends PureComponent {
         }
     }
 
+    componentWillUnmount () {
+        this._mounted = false;
+    }
+
     onLayout (e) {
         let { width, height } = e.nativeEvent.layout;
         let sizeChanged = this.state.width !== width || this.state.height !== height;
         if (width && height && sizeChanged) {
             this.layoutChanged = true;
-            this.setState({ width, height });
+            this._mounted && this.setState({ width, height });
         }
     }
 
