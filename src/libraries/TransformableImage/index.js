@@ -33,6 +33,8 @@ export default class TransformableImage extends PureComponent {
         resizeMode: 'contain'
     };
 
+    static cachedDimensions = {};
+
     constructor (props) {
         super(props);
 
@@ -107,25 +109,34 @@ export default class TransformableImage extends PureComponent {
             return;
         }
 
-        if (source && source.uri) {
-            Image.getSize(
-                source.uri,
-                (width, height) => {
-                    if (width && height) {
-                        if (this.state.imageDimensions && this.state.imageDimensions.width === width && this.state.imageDimensions.height === height) {
-                            // no need to update state
-                        } else {
-                            this._mounted && this.setState({ imageDimensions: { width, height } });
-                        }
-                    }
-                },
-                () => {
-                    this._mounted && this.setState({ error: true });
-                }
-            );
-        } else {
-            console.warn('react-native-image-gallery', 'Please provide dimensions of your local images');
+        if (TransformableImage.cachedDimensions[source.uri]) {
+            this.setState({ imageDimensions: TransformableImage.cachedDimensions[source.uri] });
+            return;
         }
+
+        if (!source || !source.uri) {
+            console.warn('react-native-image-gallery', 'Please provide dimensions of your local images');
+            return;
+        }
+
+        const onImageSize = (width, height) => {
+            if (width && height) {
+                TransformableImage.cachedDimensions[source.uri] = { width, height };
+                this._mounted && this.setState({ imageDimensions: TransformableImage.cachedDimensions[source.uri] });
+            }
+        };
+
+        Image.getSize(
+            source.uri,
+            onImageSize,
+            (e) => {
+                console.log(e);
+                this._mounted && this.setState({
+                    error: true,
+                    errorInfo: e
+                });
+            }
+        );
     }
 
     getViewTransformerInstance () {
@@ -141,7 +152,7 @@ export default class TransformableImage extends PureComponent {
     }
 
     render () {
-        const { imageDimensions, viewWidth, viewHeight, error, keyAccumulator, imageLoaded } = this.state;
+        const { imageDimensions, viewWidth, viewHeight, error, errorInfo, keyAccumulator, imageLoaded } = this.state;
         const { style, image, imageComponent, resizeMode, enableTransform, enableScale, enableTranslate, onTransformGestureReleased, onViewTransformed } = this.props;
 
         let maxScale = 1;
@@ -172,7 +183,14 @@ export default class TransformableImage extends PureComponent {
             capInsets: { left: 0.1, top: 0.1, right: 0.1, bottom: 0.1 }
         };
 
-        const content = imageComponent ? imageComponent(imageProps, imageDimensions) : <Image { ...imageProps } />;
+        let content;
+        if (error) {
+            content = this.renderError(errorInfo);
+        } else if (imageComponent) {
+            content = imageComponent(imageProps, imageDimensions);
+        } else {
+            content = <Image { ...imageProps } />;
+        }
 
         return (
             <ViewTransformer
@@ -188,7 +206,7 @@ export default class TransformableImage extends PureComponent {
               contentAspectRatio={contentAspectRatio}
               onLayout={this.onLayout}
               style={style}>
-                { error ? this.renderError() : content }
+                { content }
             </ViewTransformer>
         );
     }
