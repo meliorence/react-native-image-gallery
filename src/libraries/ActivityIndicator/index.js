@@ -4,7 +4,6 @@ import {View, ActivityIndicator} from 'react-native';
 const ActivityIndicatorComponent = (props) => {
     return (
         <View style={{
-            flexDirection: 'column',
             alignItems: 'center',
             justifyContent: 'center',
             position: 'absolute',
