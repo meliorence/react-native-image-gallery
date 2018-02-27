@@ -36,6 +36,7 @@ export default class TransformableImage extends PureComponent {
     constructor (props) {
         super(props);
 
+        this.onError = this.onError.bind(this);
         this.onLayout = this.onLayout.bind(this);
         this.onLoad = this.onLoad.bind(this);
         this.onLoadStart = this.onLoadStart.bind(this);
@@ -73,6 +74,11 @@ export default class TransformableImage extends PureComponent {
 
     componentWillUnmount () {
         this._mounted = false;
+    }
+
+    onError (e) {
+        this.props.onError && this.props.onError(e);
+        this.setState({ error: true });
     }
 
     onLoadStart (e) {
@@ -167,6 +173,7 @@ export default class TransformableImage extends PureComponent {
             source: image.source,
             style: [style, { backgroundColor: 'transparent' }],
             resizeMode: resizeMode,
+            onError: this.onError,
             onLoadStart: this.onLoadStart,
             onLoad: this.onLoad,
             capInsets: { left: 0.1, top: 0.1, right: 0.1, bottom: 0.1 }
