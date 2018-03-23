@@ -14,6 +14,8 @@ export default class Gallery extends PureComponent {
         ...View.propTypes,
         images: PropTypes.arrayOf(PropTypes.object),
         initialPage: PropTypes.number,
+        enforceInitialPage: PropTypes.bool,
+        maxScale: PropTypes.number,
         scrollViewStyle: ViewPropTypes ? ViewPropTypes.style : View.propTypes.style,
         pageMargin: PropTypes.number,
         onPageSelected: PropTypes.func,
@@ -32,7 +34,9 @@ export default class Gallery extends PureComponent {
     static defaultProps = {
         removeClippedSubviews: true,
         enableZoom: true,
+        enforceInitialPage: false,
         imageComponent: undefined,
+        maxScale: 1,
         scrollViewStyle: {},
         flatListProps: DEFAULT_FLAT_LIST_PROPS
     };
@@ -236,6 +240,7 @@ export default class Gallery extends PureComponent {
         const { onViewTransformed, onTransformGestureReleased, errorComponent, imageComponent } = this.props;
         return (
             <TransformableImage
+              maxScale={this.props.maxScale}
               onViewTransformed={((transform) => {
                   onViewTransformed && onViewTransformed(transform, pageId);
               })}
@@ -286,6 +291,7 @@ export default class Gallery extends PureComponent {
               ref={'galleryViewPager'}
               scrollViewStyle={this.props.scrollViewStyle}
               scrollEnabled={false}
+              enforceInitialPage={this.props.enforceInitialPage}
               renderPage={this.renderPage}
               pageDataArray={images}
               {...gestureResponder}

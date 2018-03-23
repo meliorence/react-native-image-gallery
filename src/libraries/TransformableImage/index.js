@@ -144,7 +144,7 @@ export default class TransformableImage extends PureComponent {
         const { imageDimensions, viewWidth, viewHeight, error, keyAccumulator, imageLoaded } = this.state;
         const { style, image, imageComponent, resizeMode, enableTransform, enableScale, enableTranslate, onTransformGestureReleased, onViewTransformed } = this.props;
 
-        let maxScale = 1;
+        let maxScale = this.props.maxScale;
         let contentAspectRatio;
         let width, height; // imageDimensions
 
