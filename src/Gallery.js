@@ -15,7 +15,6 @@ export default class Gallery extends PureComponent {
         images: PropTypes.arrayOf(PropTypes.object),
         initialPage: PropTypes.number,
         enforceInitialPage: PropTypes.bool,
-        maxScale: PropTypes.number,
         scrollViewStyle: ViewPropTypes ? ViewPropTypes.style : View.propTypes.style,
         pageMargin: PropTypes.number,
         onPageSelected: PropTypes.func,
@@ -36,7 +35,6 @@ export default class Gallery extends PureComponent {
         enableZoom: true,
         enforceInitialPage: false,
         imageComponent: undefined,
-        maxScale: 1,
         scrollViewStyle: {},
         flatListProps: DEFAULT_FLAT_LIST_PROPS
     };
@@ -240,7 +238,6 @@ export default class Gallery extends PureComponent {
         const { onViewTransformed, onTransformGestureReleased, errorComponent, imageComponent } = this.props;
         return (
             <TransformableImage
-              maxScale={this.props.maxScale}
               onViewTransformed={((transform) => {
                   onViewTransformed && onViewTransformed(transform, pageId);
               })}
