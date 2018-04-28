@@ -108,7 +108,7 @@ export default class ViewPager extends PureComponent {
 
         const finalX = this.getScrollOffsetOfPage(page);
         this.scroller.startScroll(this.scroller.getCurrX(), 0, finalX - this.scroller.getCurrX(), 0, 0);
-        
+
         requestAnimationFrame(() => {
             // this is here to work around a bug in FlatList, as discussed here
             // https://github.com/facebook/react-native/issues/1831
@@ -260,7 +260,7 @@ export default class ViewPager extends PureComponent {
     }
 
     keyExtractor (item, index) {
-        return index;
+        return `indexNumber_${index}`;
     }
 
     renderRow ({ item, index }) {
@@ -296,7 +296,7 @@ export default class ViewPager extends PureComponent {
 
     render () {
         const { width, height } = this.state;
-        const { pageDataArray, scrollEnabled, style, scrollViewStyle } = this.props;
+        const { pageDataArray, scrollEnabled, style, scrollViewStyle, keyExtractor } = this.props;
 
         if (width && height) {
             let list = pageDataArray;
@@ -319,7 +319,7 @@ export default class ViewPager extends PureComponent {
                   {...this.props.flatListProps}
                   style={[{ flex: 1 }, scrollViewStyle]}
                   ref={'innerFlatList'}
-                  keyExtractor={this.keyExtractor}
+                  keyExtractor={keyExtractor || this.keyExtractor}
                   scrollEnabled={false}
                   horizontal={true}
                   data={pageDataArray}

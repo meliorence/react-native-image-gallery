@@ -259,10 +259,8 @@ export default class Gallery extends PureComponent {
     render () {
         let gestureResponder = this.gestureResponder;
 
-        let images = this.props.images;
-        if (!images) {
-            images = [];
-        }
+        const {images = [], keyExtractor} = this.props;
+
         this.pageCount = images.length;
 
         if (this.pageCount <= 0) {
@@ -275,6 +273,7 @@ export default class Gallery extends PureComponent {
             <ViewPager
               {...this.props}
               flatListProps={flatListProps}
+              keyExtractor={keyExtractor}
               ref={'galleryViewPager'}
               scrollViewStyle={this.props.scrollViewStyle}
               scrollEnabled={false}
