@@ -59,6 +59,7 @@ export default class ViewPager extends PureComponent {
         this.onResponderMove = this.onResponderMove.bind(this);
         this.onResponderRelease = this.onResponderRelease.bind(this);
         this.getItemLayout = this.getItemLayout.bind(this);
+        this.scrollToIndex = this.scrollToIndex.bind(this);
 
         this.scroller = this.createScroller();
     }
@@ -101,9 +102,13 @@ export default class ViewPager extends PureComponent {
         // FlatList is set to render at initialPage.
         // The scroller we use is not aware of this.
         // Let it know by simulating most of what happens in scrollToPage()
+        this.scrollToIndex(this.props.initialPage);
+    }
+
+    scrollToIndex (index) {
         this.onPageScrollStateChanged('settling');
 
-        const page = this.validPage(this.props.initialPage);
+        const page = this.validPage(index);
         this.onPageChanged(page);
 
         const finalX = this.getScrollOffsetOfPage(page);
