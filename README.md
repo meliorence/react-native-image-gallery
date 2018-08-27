@@ -21,7 +21,7 @@ This component aims to be the best image viewer for React Native apps, it is far
 
 This component utilizes **[@ldn0x7dc/react-native-view-pager](https://github.com/ldn0x7dc/react-native-view-pager)** as the scrollable container and **[react-native-transformable-image](https://github.com/ldn0x7dc/react-native-transformable-image)** as the wrapped image. 
 
-This component works on react-native **0.28+**.
+This component works on react-native **0.44+**.
 
 You can try this example live in **Archriss' showcase app** on [Android](https://play.google.com/store/apps/details?id=fr.archriss.demo.app) and [iOS](https://itunes.apple.com/lu/app/archriss-presentation-mobile/id1180954376?mt=8) or check out the demo.
 
