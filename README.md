@@ -10,6 +10,8 @@
     - [Props](#props)
     - [Scroll state and events](#scroll-state-and-events)
 
+>Update: This is a fork of [archriss/react-native-gallery](https://github.com/archriss/react-native-gallery) with a fixed keyExtractor error and an additional `maxScale` option. Thanks to both [archriss](https://github.com/archriss) and [ldn0x7dc](https://github.com/ldn0x7dc) for this lib!
+
 >This used to be a fork of [ldn0x7dc/react-native-gallery](https://github.com/ldn0x7dc/react-native-gallery) but the original repo is no longer maintained, so here's our own repo. Props to [ldn0x7dc](https://github.com/ldn0x7dc) for his amazing work! 👏👏👏
 
 A pure JavaScript image gallery component for React Native apps with common gestures like pan, pinch and doubleTap, supporting both iOS and Android.
