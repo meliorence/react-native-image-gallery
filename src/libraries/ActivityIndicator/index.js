@@ -3,7 +3,6 @@ import React from 'react';
  const ActivityIndicatorComponent = (props) => {
     return (
         <View style={{
-            flexDirection: 'column',
             alignItems: 'center',
             justifyContent: 'center',
             position: 'absolute',
