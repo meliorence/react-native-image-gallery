@@ -24,7 +24,7 @@ export default class TransformableImage extends PureComponent {
         imageComponent: PropTypes.func,
         resizeMode: PropTypes.string,
         errorComponent: PropTypes.func,
-        imageLoadingActivityIndicator: PropTypes.shape(ActivityIndicator.propTypes),
+        imageLoadingIndicatorProps: PropTypes.shape(ActivityIndicator.propTypes),
     };
 
     static defaultProps = {
@@ -144,7 +144,7 @@ export default class TransformableImage extends PureComponent {
 
     render () {
         const { imageDimensions, viewWidth, viewHeight, error, keyAccumulator, imageLoaded } = this.state;
-        const { style, image, imageComponent, resizeMode, enableTransform, enableScale, enableTranslate, onTransformGestureReleased, onViewTransformed, imageLoadingActivityIndicator } = this.props;
+        const { style, image, imageComponent, resizeMode, enableTransform, enableScale, enableTranslate, onTransformGestureReleased, onViewTransformed, imageLoadingIndicatorProps } = this.props;
 
         let maxScale = 1;
         let contentAspectRatio;
@@ -193,7 +193,7 @@ export default class TransformableImage extends PureComponent {
                   style={style}>
                     { error ? this.renderError() : content }
                 </ViewTransformer>
-                {!imageLoaded && <ImageLoadingIndicator {...imageLoadingActivityIndicator} />}
+                {!imageLoaded && <ImageLoadingIndicator {...imageLoadingIndicatorProps} />}
             </View>
         );
     }

@@ -1,7 +1,5 @@
 import React from 'react';
-import {View, Platform, ActivityIndicator} from 'react-native';
-import PropTypes from 'prop-types';
- const DEFAULT_LOADER_SIZE = Platform.OS === 'ios' ? 'large' : 50;
+ import {View, ActivityIndicator} from 'react-native';
  const ActivityIndicatorComponent = (props) => {
     return (
         <View style={{
@@ -14,7 +12,7 @@ import PropTypes from 'prop-types';
             bottom: 0,
             left: 0
         }}>
-            <ActivityIndicator size={DEFAULT_LOADER_SIZE} {...props}/>
+            <ActivityIndicator {...props} />
         </View>
     );
 };
