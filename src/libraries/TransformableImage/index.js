@@ -86,8 +86,8 @@ export default class TransformableImage extends PureComponent {
         }
     }
 
-    onLoadEnd (e) {
-        this.props.onLoadEnd && this.props.onLoadEnd(e);
+    onLoadEnd (e, image) {
+        this.props.onLoadEnd && this.props.onLoadEnd(e, image);
     }
 
     onLoad (e) {
@@ -177,7 +177,7 @@ export default class TransformableImage extends PureComponent {
             resizeMode: resizeMode,
             onLoadStart: this.onLoadStart,
             onLoad: this.onLoad,
-            onLoadEnd: this.onLoadEnd,
+            onLoadEnd: (e) => this.onLoadEnd(e, image),
             capInsets: { left: 0.1, top: 0.1, right: 0.1, bottom: 0.1 }
         };
 
