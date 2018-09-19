@@ -87,7 +87,7 @@ export default class TransformableImage extends PureComponent {
     }
 
     onLoadEnd (e) {
-        this.this.props.onLoadEnd && this.this.props.onLoadEnd(e);
+        this.props.onLoadEnd && this.props.onLoadEnd(e);
     }
 
     onLoad (e) {
