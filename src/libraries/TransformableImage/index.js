@@ -16,6 +16,7 @@ export default class TransformableImage extends PureComponent {
         style: ViewPropTypes ? ViewPropTypes.style : View.propTypes.style,
         onLoad: PropTypes.func,
         onLoadStart: PropTypes.func,
+        onLoadEnd: PropTypes.func,
         enableTransform: PropTypes.bool,
         enableScale: PropTypes.bool,
         enableTranslate: PropTypes.bool,
@@ -41,6 +42,7 @@ export default class TransformableImage extends PureComponent {
         this.onLayout = this.onLayout.bind(this);
         this.onLoad = this.onLoad.bind(this);
         this.onLoadStart = this.onLoadStart.bind(this);
+        this.onLoadEnd = this.onLoadEnd.bind(this);
         this.getViewTransformerInstance = this.getViewTransformerInstance.bind(this);
         this.renderError = this.renderError.bind(this);
 
@@ -82,6 +84,10 @@ export default class TransformableImage extends PureComponent {
         if (this.state.imageLoaded) {
             this.setState({ imageLoaded: false });
         }
+    }
+
+    onLoadEnd (e) {
+        this.this.props.onLoadEnd && this.this.props.onLoadEnd(e);
     }
 
     onLoad (e) {
@@ -171,6 +177,7 @@ export default class TransformableImage extends PureComponent {
             resizeMode: resizeMode,
             onLoadStart: this.onLoadStart,
             onLoad: this.onLoad,
+            onLoadEnd: this.onLoadEnd,
             capInsets: { left: 0.1, top: 0.1, right: 0.1, bottom: 0.1 }
         };
 
