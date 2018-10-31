@@ -260,7 +260,8 @@ export default class ViewPager extends PureComponent {
     }
 
     keyExtractor (item, index) {
-        return index;
+        // add toString . Resolve warning info : Invalid child context , expected `string`
+        return index.toString();
     }
 
     renderRow ({ item, index }) {
