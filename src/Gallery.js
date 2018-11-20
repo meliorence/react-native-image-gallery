@@ -131,7 +131,7 @@ export default class Gallery extends PureComponent {
                 currentImageTransformer && currentImageTransformer.onResponderGrant(evt, gestureState);
                 if (this.props.onLongPress) {
                     this._longPressTimeout = setTimeout(() => {
-                        this.props.onLongPress(gestureState);
+                        this.props.onLongPress(gestureState, this.props.images[this.currentPage]);
                     }, 600);
                 }
             },

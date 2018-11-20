@@ -73,7 +73,7 @@ Prop | Description | Type | Default
 `onPageScroll` | Scroll event, see [scroll state and events](#scroll-state-and-events) | `function`
 `scrollViewStyle` | Custom style for the `FlatList` component | `object` | `{}`
 `onSingleTapConfirmed` | Fired after a single tap | `function`
-`onLongPress` | Fired after a long press | `function`
+`onLongPress` | Fired after a long press, This props to be passed current image object in `second` parameter | `function`
 `imageLoadingIndicatorProps` | Props to be passed to the underlying image `ActivityIndicator` component | `object` | React Native `ActivityIndicator` defaults
 `onLoadEnd` | Fired after image loading end. This props to be passed current image object in `second` parameter | `function`
 
