@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactNative, { View, Animated, Easing, NativeModules } from 'react-native';
+import { View, Animated, Easing, NativeModules, findNodeHandle } from 'react-native';
 import Scroller from '../Scroller';
 import PropTypes from 'prop-types';
 import { createResponder } from '../GestureResponder';
@@ -100,10 +100,10 @@ export default class ViewTransformer extends React.Component {
             onStartShouldSetResponder: (evt, gestureState) => true,
             onMoveShouldSetResponderCapture: (evt, gestureState) => true,
             // onMoveShouldSetResponder: this.handleMove,
-            onResponderMove: this.onResponderMove,
-            onResponderGrant: this.onResponderGrant,
-            onResponderRelease: this.onResponderRelease,
-            onResponderTerminate: this.onResponderRelease,
+            onResponderMove: this.onResponderMove.bind(this),
+            onResponderGrant: this.onResponderGrant.bind(this),
+            onResponderRelease: this.onResponderRelease.bind(this),
+            onResponderTerminate: this.onResponderRelease.bind(this),
             onResponderTerminationRequest: (evt, gestureState) => false, // Do not allow parent view to intercept gesture
             onResponderSingleTapConfirmed: (evt, gestureState) => {
                 this.props.onSingleTapConfirmed && this.props.onSingleTapConfirmed();
@@ -161,7 +161,7 @@ export default class ViewTransformer extends React.Component {
     }
 
     measureLayout () {
-        let handle = ReactNative.findNodeHandle(this.refs['innerViewRef']);
+        let handle = findNodeHandle(this.refs['innerViewRef']);
         NativeModules.UIManager.measure(handle, (x, y, width, height, pageX, pageY) => {
             if (typeof pageX === 'number' && typeof pageY === 'number') { // avoid undefined values on Android devices
                 if (this.state.pageX !== pageX || this.state.pageY !== pageY) {

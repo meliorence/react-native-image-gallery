@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { View, ViewPropTypes } from 'react-native';
+import { View, ViewPropTypes, ActivityIndicator } from 'react-native';
 import PropTypes from 'prop-types';
 import { createResponder } from './libraries/GestureResponder';
 import TransformableImage from './libraries/TransformableImage';
@@ -13,9 +13,12 @@ export default class Gallery extends PureComponent {
     static propTypes = {
         ...View.propTypes,
         images: PropTypes.arrayOf(PropTypes.object),
+        imageLoadingIndicatorProps: PropTypes.shape(ActivityIndicator.propTypes),
         initialPage: PropTypes.number,
         scrollViewStyle: ViewPropTypes ? ViewPropTypes.style : View.propTypes.style,
         pageMargin: PropTypes.number,
+        onEndReached: PropTypes.func,
+        onEndReachedThreshold: PropTypes.number,
         onPageSelected: PropTypes.func,
         onPageScrollStateChanged: PropTypes.func,
         onPageScroll: PropTypes.func,
@@ -25,13 +28,16 @@ export default class Gallery extends PureComponent {
         removeClippedSubviews: PropTypes.bool,
         imageComponent: PropTypes.func,
         errorComponent: PropTypes.func,
-        flatListProps: PropTypes.object
+        flatListProps: PropTypes.object,
+        onLoad: PropTypes.func,
+        onLoadStart: PropTypes.func
     };
 
     static defaultProps = {
         removeClippedSubviews: true,
         imageComponent: undefined,
         scrollViewStyle: {},
+        onEndReachedThreshold: 0.5,
         flatListProps: DEFAULT_FLAT_LIST_PROPS
     };
 
@@ -215,6 +221,9 @@ export default class Gallery extends PureComponent {
     onPageSelected (page) {
         this.currentPage = page;
         this.props.onPageSelected && this.props.onPageSelected(page);
+        if (page + 1 > this.props.onEndReachedThreshold * this.props.images.length) {
+          this.props.onEndReached && this.props.onEndReached();
+        }
     }
 
     onPageScrollStateChanged (state) {
@@ -225,9 +234,24 @@ export default class Gallery extends PureComponent {
     }
 
     renderPage (pageData, pageId) {
-        const { onViewTransformed, onTransformGestureReleased, errorComponent, imageComponent } = this.props;
+        const {
+            onViewTransformed,
+            onTransformGestureReleased,
+            errorComponent,
+            imageComponent,
+            onError,
+            onLoad,
+            onLoadEnd,
+            onLoadStart
+        } = this.props;
+
+
         return (
             <TransformableImage
+              onError={onError}
+              onLoad={onLoad}
+              onLoadEnd={onLoadEnd}
+              onLoadStart={onLoadStart}
               onViewTransformed={((transform) => {
                   onViewTransformed && onViewTransformed(transform, pageId);
               })}
@@ -240,6 +264,7 @@ export default class Gallery extends PureComponent {
               errorComponent={errorComponent}
               imageComponent={imageComponent}
               image={pageData}
+              imageLoadingIndicatorProps={imageLoadingIndicatorProps}
             />
         );
     }

@@ -1,7 +1,8 @@
 import React, { PureComponent } from 'react';
-import { View, Text, Image, ViewPropTypes } from 'react-native';
+import { View, Text, Image, ViewPropTypes, ActivityIndicator } from 'react-native';
 import PropTypes from 'prop-types';
 import ViewTransformer from '../ViewTransformer';
+import ImageLoadingIndicator from '../ActivityIndicator';
 
 export default class TransformableImage extends PureComponent {
     static propTypes = {
@@ -22,7 +23,8 @@ export default class TransformableImage extends PureComponent {
         onViewTransformed: PropTypes.func,
         imageComponent: PropTypes.func,
         resizeMode: PropTypes.string,
-        errorComponent: PropTypes.func
+        errorComponent: PropTypes.func,
+        imageLoadingIndicatorProps: PropTypes.shape(ActivityIndicator.propTypes),
     };
 
     static defaultProps = {
@@ -36,6 +38,7 @@ export default class TransformableImage extends PureComponent {
     constructor (props) {
         super(props);
 
+        this.onError = this.onError.bind(this);
         this.onLayout = this.onLayout.bind(this);
         this.onLoad = this.onLoad.bind(this);
         this.onLoadStart = this.onLoadStart.bind(this);
@@ -73,6 +76,11 @@ export default class TransformableImage extends PureComponent {
 
     componentWillUnmount () {
         this._mounted = false;
+    }
+
+    onError (e) {
+        this.props.onError && this.props.onError(e);
+        this.setState({ error: true });
     }
 
     onLoadStart (e) {
@@ -142,7 +150,7 @@ export default class TransformableImage extends PureComponent {
 
     render () {
         const { imageDimensions, viewWidth, viewHeight, error, keyAccumulator, imageLoaded } = this.state;
-        const { style, image, imageComponent, resizeMode, enableTransform, enableScale, enableTranslate, onTransformGestureReleased, onViewTransformed } = this.props;
+        const { style, image, imageComponent, resizeMode, enableTransform, enableScale, enableTranslate, onTransformGestureReleased, onViewTransformed, imageLoadingIndicatorProps } = this.props;
 
         let maxScale = 1;
         let contentAspectRatio;
@@ -167,6 +175,7 @@ export default class TransformableImage extends PureComponent {
             source: image.source,
             style: [style, { backgroundColor: 'transparent' }],
             resizeMode: resizeMode,
+            onError: this.onError,
             onLoadStart: this.onLoadStart,
             onLoad: this.onLoad,
             capInsets: { left: 0.1, top: 0.1, right: 0.1, bottom: 0.1 }
@@ -175,21 +184,24 @@ export default class TransformableImage extends PureComponent {
         const content = imageComponent ? imageComponent(imageProps, imageDimensions) : <Image { ...imageProps } />;
 
         return (
-            <ViewTransformer
-              ref={'viewTransformer'}
-              key={'viewTransformer#' + keyAccumulator} // when image source changes, we should use a different node to avoid reusing previous transform state
-              enableTransform={enableTransform && imageLoaded} // disable transform until image is loaded
-              enableScale={enableScale}
-              enableTranslate={enableTranslate}
-              enableResistance={true}
-              onTransformGestureReleased={onTransformGestureReleased}
-              onViewTransformed={onViewTransformed}
-              maxScale={maxScale}
-              contentAspectRatio={contentAspectRatio}
-              onLayout={this.onLayout}
-              style={style}>
-                { error ? this.renderError() : content }
-            </ViewTransformer>
+            <View>
+                <ViewTransformer
+                  ref={'viewTransformer'}
+                  key={'viewTransformer#' + keyAccumulator} // when image source changes, we should use a different node to avoid reusing previous transform state
+                  enableTransform={enableTransform && imageLoaded} // disable transform until image is loaded
+                  enableScale={enableScale}
+                  enableTranslate={enableTranslate}
+                  enableResistance={true}
+                  onTransformGestureReleased={onTransformGestureReleased}
+                  onViewTransformed={onViewTransformed}
+                  maxScale={maxScale}
+                  contentAspectRatio={contentAspectRatio}
+                  onLayout={this.onLayout}
+                  style={style}>
+                    { error ? this.renderError() : content }
+                </ViewTransformer>
+                {!imageLoaded && <ImageLoadingIndicator {...imageLoadingIndicatorProps} />}
+            </View>
         );
     }
 }
