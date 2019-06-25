@@ -68,12 +68,15 @@ Prop | Description | Type | Default
 `errorComponent` | Custom function to render the page of an image that couldn't be displayed | `function` | A `<View>` with a stylized error
 `flatListProps` | Props to be passed to the underlying `FlatList` | `object` | `{windowSize: 3}`
 `pageMargin` | Blank space to show between images | `number` | `0`
+`onEndReached` | Fired when the page index is within the `onEndReachedThreshold` of the `images` content | `function`
+`onEndReachedThreshold` | How far from the end (in units of visible length of the list) the end of the list of images must be from the end of the content to trigger the onEndReached callback. Thus a value of 0.5 will trigger onEndReached when the end of the content is within half the visible length of the images. | `number` | `0.5`
 `onPageSelected` | Fired with the index of page that has been selected | `function`
 `onPageScrollStateChanged` | Called when page scrolling state has changed, see [scroll state and events](#scroll-state-and-events) | `function`
 `onPageScroll` | Scroll event, see [scroll state and events](#scroll-state-and-events) | `function`
 `scrollViewStyle` | Custom style for the `FlatList` component | `object` | `{}`
 `onSingleTapConfirmed` | Fired after a single tap | `function`
 `onLongPress` | Fired after a long press | `function`
+`imageLoadingIndicatorProps` | Props to be passed to the underlying image `ActivityIndicator` component | `object` | React Native `ActivityIndicator` defaults
 
 ## Scroll state and events
 

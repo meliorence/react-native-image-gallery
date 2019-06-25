@@ -65,13 +65,13 @@ export default class ViewPager extends PureComponent {
 
     createScroller () {
         return new Scroller(true, (dx, dy, scroller) => {
+		const curX = this.scroller.getCurrX();
+                this.refs['innerFlatList'] && this.refs['innerFlatList'].scrollToOffset({ offset: curX, animated: false });
             if (dx === 0 && dy === 0 && scroller.isFinished()) {
                 if (!this.activeGesture) {
                     this.onPageScrollStateChanged('idle');
                 }
             } else {
-                const curX = this.scroller.getCurrX();
-                this.refs['innerFlatList'] && this.refs['innerFlatList'].scrollToOffset({ offset: curX, animated: false });
 
                 let position = Math.floor(curX / (this.state.width + this.props.pageMargin));
                 position = this.validPage(position);
@@ -260,7 +260,7 @@ export default class ViewPager extends PureComponent {
     }
 
     keyExtractor (item, index) {
-        return index;
+        return index.toString();
     }
 
     renderRow ({ item, index }) {
@@ -316,7 +316,6 @@ export default class ViewPager extends PureComponent {
               style={[style, { flex: 1 }]}
               {...gestureResponder}>
                 <FlatList
-                  {...this.props.flatListProps}
                   style={[{ flex: 1 }, scrollViewStyle]}
                   ref={'innerFlatList'}
                   keyExtractor={this.keyExtractor}
@@ -331,6 +330,7 @@ export default class ViewPager extends PureComponent {
                   // https://github.com/facebook/react-native/issues/15734#issuecomment-330616697 and
                   // https://github.com/facebook/react-native/issues/14945#issuecomment-354651271
                   contentOffset = {{x: this.getScrollOffsetOfPage(parseInt(this.props.initialPage)), y:0}}
+                  {...this.props.flatListProps}
               />
             </View>
         );
