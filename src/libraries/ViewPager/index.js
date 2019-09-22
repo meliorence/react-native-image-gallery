@@ -259,9 +259,7 @@ export default class ViewPager extends PureComponent {
         };
     }
 
-    keyExtractor (item, index) {
-        return index;
-    }
+    keyExtractor (item, index) { return index.toString() }
 
     renderRow ({ item, index }) {
         const { width, height } = this.state;
