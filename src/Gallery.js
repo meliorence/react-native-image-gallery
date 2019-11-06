@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { View, ViewPropTypes } from 'react-native';
+import { View, ViewPropTypes, ActivityIndicator } from 'react-native';
 import PropTypes from 'prop-types';
 import { createResponder } from './libraries/GestureResponder';
 import TransformableImage from './libraries/TransformableImage';
@@ -13,6 +13,7 @@ export default class Gallery extends PureComponent {
     static propTypes = {
         ...View.propTypes,
         images: PropTypes.arrayOf(PropTypes.object),
+        imageLoadingActivityIndicator: PropTypes.shape(ActivityIndicator.propTypes),
         initialPage: PropTypes.number,
         scrollViewStyle: ViewPropTypes ? ViewPropTypes.style : View.propTypes.style,
         pageMargin: PropTypes.number,
@@ -232,6 +233,7 @@ export default class Gallery extends PureComponent {
             onTransformGestureReleased,
             errorComponent,
             imageComponent,
+            imageLoadingActivityIndicator,
             onError,
             onLoad,
             onLoadEnd,
@@ -255,6 +257,7 @@ export default class Gallery extends PureComponent {
                 errorComponent={errorComponent}
                 imageComponent={imageComponent}
                 image={pageData}
+                imageLoadingActivityIndicator={imageLoadingActivityIndicator}
             />
         );
     }
