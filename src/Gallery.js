@@ -13,7 +13,7 @@ export default class Gallery extends PureComponent {
     static propTypes = {
         ...View.propTypes,
         images: PropTypes.arrayOf(PropTypes.object),
-        imageLoadingActivityIndicator: PropTypes.shape(ActivityIndicator.propTypes),
+        imageLoadingIndicatorProps: PropTypes.shape(ActivityIndicator.propTypes),
         initialPage: PropTypes.number,
         scrollViewStyle: ViewPropTypes ? ViewPropTypes.style : View.propTypes.style,
         pageMargin: PropTypes.number,
@@ -233,7 +233,7 @@ export default class Gallery extends PureComponent {
             onTransformGestureReleased,
             errorComponent,
             imageComponent,
-            imageLoadingActivityIndicator,
+            imageLoadingIndicatorProps,
             onError,
             onLoad,
             onLoadEnd,
@@ -257,7 +257,7 @@ export default class Gallery extends PureComponent {
                 errorComponent={errorComponent}
                 imageComponent={imageComponent}
                 image={pageData}
-                imageLoadingActivityIndicator={imageLoadingActivityIndicator}
+                imageLoadingIndicatorProps={imageLoadingIndicatorProps}
             />
         );
     }
