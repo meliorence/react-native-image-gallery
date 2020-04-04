@@ -8,14 +8,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ever-digital/react-native-image-gallery.git"
+    "url": "git+https://github.com/andrewsouthpaw/react-native-image-gallery.git"
   },
-  "author": "Archriss",
+  "author": "Andrew Smith <andrewsmith@alumni.stanford.edu>",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/ever-digital/react-native-image-gallery/issues"
+    "url": "https://github.com/AndrewSouthpaw/react-native-image-gallery/issues"
   },
-  "homepage": "https://github.com/ever-digital/react-native-image-gallery#readme",
+  "homepage": "https://github.com/AndrewSouthpaw/react-native-image-gallery#readme",
   "dependencies": {
     "prop-types": "^15.6.0",
     "react-mixin": "^3.0.5",
