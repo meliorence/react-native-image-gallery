@@ -95,7 +95,8 @@ export default class ViewTransformer extends React.Component {
         return new Transform(this.state.scale, this.state.translateX, this.state.translateY);
     }
 
-    componentWillMount () {
+    // eslint-disable-next-line camelcase
+    UNSAFE_componentWillMount () {
         this.gestureResponder = createResponder({
             onStartShouldSetResponder: (evt, gestureState) => true,
             onMoveShouldSetResponderCapture: (evt, gestureState) => true,

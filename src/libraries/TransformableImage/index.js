@@ -51,7 +51,8 @@ export default class TransformableImage extends PureComponent {
         };
     }
 
-    componentWillMount () {
+    // eslint-disable-next-line camelcase
+    UNSAFE_componentWillMount () {
         if (!this.state.imageDimensions) {
             this.getImageSize(this.props.image);
         }
@@ -61,7 +62,8 @@ export default class TransformableImage extends PureComponent {
         this._mounted = true;
     }
 
-    componentWillReceiveProps (nextProps) {
+    // eslint-disable-next-line camelcase
+    UNSAFE_componentWillReceiveProps (nextProps) {
         if (!sameImage(this.props.image, nextProps.image)) {
             // image source changed, clear last image's imageDimensions info if any
             this.setState({ imageDimensions: nextProps.image.dimensions, keyAcumulator: this.state.keyAcumulator + 1 });

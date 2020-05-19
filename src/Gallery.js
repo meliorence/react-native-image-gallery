@@ -55,7 +55,8 @@ export default class Gallery extends PureComponent {
         this.activeImageResponder = this.activeImageResponder.bind(this);
     }
 
-    componentWillMount () {
+    // eslint-disable-next-line camelcase
+    UNSAFE_componentWillMount () {
         let onResponderReleaseOrTerminate = (evt, gestureState) => {
             if (this.activeResponder) {
                 if (this.activeResponder === this.viewPagerResponder &&
