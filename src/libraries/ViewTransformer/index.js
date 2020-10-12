@@ -100,10 +100,10 @@ export default class ViewTransformer extends React.Component {
             onStartShouldSetResponder: (evt, gestureState) => true,
             onMoveShouldSetResponderCapture: (evt, gestureState) => true,
             // onMoveShouldSetResponder: this.handleMove,
-            onResponderMove: this.onResponderMove,
-            onResponderGrant: this.onResponderGrant,
-            onResponderRelease: this.onResponderRelease,
-            onResponderTerminate: this.onResponderRelease,
+            onResponderMove: this.onResponderMove.bind(this),
+            onResponderGrant: this.onResponderGrant.bind(this),
+            onResponderRelease: this.onResponderRelease.bind(this),
+            onResponderTerminate: this.onResponderRelease.bind(this),
             onResponderTerminationRequest: (evt, gestureState) => false, // Do not allow parent view to intercept gesture
             onResponderSingleTapConfirmed: (evt, gestureState) => {
                 this.props.onSingleTapConfirmed && this.props.onSingleTapConfirmed();
