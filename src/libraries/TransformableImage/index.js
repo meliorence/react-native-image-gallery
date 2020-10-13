@@ -22,7 +22,8 @@ export default class TransformableImage extends PureComponent {
         onViewTransformed: PropTypes.func,
         imageComponent: PropTypes.func,
         resizeMode: PropTypes.string,
-        errorComponent: PropTypes.func
+        errorComponent: PropTypes.func,
+        maxScale: PropTypes.number,
     };
 
     static defaultProps = {
@@ -30,7 +31,8 @@ export default class TransformableImage extends PureComponent {
         enableScale: true,
         enableTranslate: true,
         imageComponent: undefined,
-        resizeMode: 'contain'
+        resizeMode: 'contain',
+        maxScale: 1,
     };
 
     constructor (props) {
@@ -51,7 +53,7 @@ export default class TransformableImage extends PureComponent {
         };
     }
 
-    componentWillMount () {
+    UNSAFE_componentWillMount () {
         if (!this.state.imageDimensions) {
             this.getImageSize(this.props.image);
         }
@@ -61,7 +63,7 @@ export default class TransformableImage extends PureComponent {
         this._mounted = true;
     }
 
-    componentWillReceiveProps (nextProps) {
+    UNSAFE_componentWillReceiveProps (nextProps) {
         if (!sameImage(this.props.image, nextProps.image)) {
             // image source changed, clear last image's imageDimensions info if any
             this.setState({ imageDimensions: nextProps.image.dimensions, keyAcumulator: this.state.keyAcumulator + 1 });
@@ -142,9 +144,8 @@ export default class TransformableImage extends PureComponent {
 
     render () {
         const { imageDimensions, viewWidth, viewHeight, error, keyAccumulator, imageLoaded } = this.state;
-        const { style, image, imageComponent, resizeMode, enableTransform, enableScale, enableTranslate, onTransformGestureReleased, onViewTransformed } = this.props;
+        const { style, image, imageComponent, resizeMode, enableTransform, enableScale, enableTranslate, onTransformGestureReleased, onViewTransformed, maxScale } = this.props;
 
-        let maxScale = 1;
         let contentAspectRatio;
         let width, height; // imageDimensions
 
@@ -155,10 +156,10 @@ export default class TransformableImage extends PureComponent {
 
         if (width && height) {
             contentAspectRatio = width / height;
-            if (viewWidth && viewHeight) {
-                maxScale = Math.max(width / viewWidth, height / viewHeight);
-                maxScale = Math.max(1, maxScale);
-            }
+            //if (viewWidth && viewHeight) {
+            //    maxScale = Math.max(width / viewWidth, height / viewHeight);
+            //    maxScale = Math.max(1, maxScale);
+            //}
         }
 
         const imageProps = {

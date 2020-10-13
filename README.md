@@ -10,6 +10,8 @@
     - [Props](#props)
     - [Scroll state and events](#scroll-state-and-events)
 
+>Update: This is a fork of [ever-digital/react-native-image-gallery](https://github.com/ever-digital/react-native-image-gallery) with a fixed keyExtractor error and an additional `maxScale` option. Thanks to [ever-digital](https://github.com/ever-digital), [archriss](https://github.com/archriss) and [ldn0x7dc](https://github.com/ldn0x7dc) for this lib!
+
 >This used to be a fork of [ldn0x7dc/react-native-gallery](https://github.com/ldn0x7dc/react-native-gallery) but the original repo is no longer maintained, so here's our own repo. Props to [ldn0x7dc](https://github.com/ldn0x7dc) for his amazing work! 👏👏👏
 
 A pure JavaScript image gallery component for React Native apps with common gestures like pan, pinch and doubleTap, supporting both iOS and Android.
@@ -68,12 +70,15 @@ Prop | Description | Type | Default
 `errorComponent` | Custom function to render the page of an image that couldn't be displayed | `function` | A `<View>` with a stylized error
 `flatListProps` | Props to be passed to the underlying `FlatList` | `object` | `{windowSize: 3}`
 `pageMargin` | Blank space to show between images | `number` | `0`
+`onEndReached` | Fired when the page index is within the `onEndReachedThreshold` of the `images` content | `function`
+`onEndReachedThreshold` | How far from the end (in units of visible length of the list) the end of the list of images must be from the end of the content to trigger the onEndReached callback. Thus a value of 0.5 will trigger onEndReached when the end of the content is within half the visible length of the images. | `number` | `0.5`
 `onPageSelected` | Fired with the index of page that has been selected | `function`
 `onPageScrollStateChanged` | Called when page scrolling state has changed, see [scroll state and events](#scroll-state-and-events) | `function`
 `onPageScroll` | Scroll event, see [scroll state and events](#scroll-state-and-events) | `function`
 `scrollViewStyle` | Custom style for the `FlatList` component | `object` | `{}`
 `onSingleTapConfirmed` | Fired after a single tap | `function`
 `onLongPress` | Fired after a long press | `function`
+`maxScale` | Sets the max zoom scale | `number` | `1`
 
 ## Scroll state and events
 

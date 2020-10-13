@@ -87,7 +87,7 @@ export default class ViewPager extends PureComponent {
         });
     }
 
-    componentWillMount () {
+    UNSAFE_componentWillMount () {
         this.gestureResponder = createResponder({
             onStartShouldSetResponder: (evt, gestureState) => true,
             onResponderGrant: this.onResponderGrant,
@@ -260,7 +260,7 @@ export default class ViewPager extends PureComponent {
     }
 
     keyExtractor (item, index) {
-        return index;
+        return String(index);
     }
 
     renderRow ({ item, index }) {

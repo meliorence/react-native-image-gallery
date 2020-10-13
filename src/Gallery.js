@@ -16,6 +16,8 @@ export default class Gallery extends PureComponent {
         initialPage: PropTypes.number,
         scrollViewStyle: ViewPropTypes ? ViewPropTypes.style : View.propTypes.style,
         pageMargin: PropTypes.number,
+        onEndReached: PropTypes.func,
+        onEndReachedThreshold: PropTypes.number,
         onPageSelected: PropTypes.func,
         onPageScrollStateChanged: PropTypes.func,
         onPageScroll: PropTypes.func,
@@ -25,14 +27,17 @@ export default class Gallery extends PureComponent {
         removeClippedSubviews: PropTypes.bool,
         imageComponent: PropTypes.func,
         errorComponent: PropTypes.func,
-        flatListProps: PropTypes.object
+        flatListProps: PropTypes.object,
+        maxScale: PropTypes.number,
     };
 
     static defaultProps = {
         removeClippedSubviews: true,
         imageComponent: undefined,
         scrollViewStyle: {},
-        flatListProps: DEFAULT_FLAT_LIST_PROPS
+        flatListProps: DEFAULT_FLAT_LIST_PROPS,
+        maxScale: 1,
+        onEndReachedThreshold: 0.5,
     };
 
     imageRefs = new Map();
@@ -55,7 +60,7 @@ export default class Gallery extends PureComponent {
         this.activeImageResponder = this.activeImageResponder.bind(this);
     }
 
-    componentWillMount () {
+    UNSAFE_componentWillMount () {
         let onResponderReleaseOrTerminate = (evt, gestureState) => {
             if (this.activeResponder) {
                 if (this.activeResponder === this.viewPagerResponder &&
@@ -215,6 +220,9 @@ export default class Gallery extends PureComponent {
     onPageSelected (page) {
         this.currentPage = page;
         this.props.onPageSelected && this.props.onPageSelected(page);
+        if (page + 1 > this.props.onEndReachedThreshold * this.props.images.length) {
+          this.props.onEndReached && this.props.onEndReached();
+        }
     }
 
     onPageScrollStateChanged (state) {
@@ -225,7 +233,7 @@ export default class Gallery extends PureComponent {
     }
 
     renderPage (pageData, pageId) {
-        const { onViewTransformed, onTransformGestureReleased, errorComponent, imageComponent } = this.props;
+        const { onViewTransformed, onTransformGestureReleased, errorComponent, imageComponent, maxScale } = this.props;
         return (
             <TransformableImage
               onViewTransformed={((transform) => {
@@ -240,6 +248,7 @@ export default class Gallery extends PureComponent {
               errorComponent={errorComponent}
               imageComponent={imageComponent}
               image={pageData}
+              maxScale={maxScale}
             />
         );
     }
