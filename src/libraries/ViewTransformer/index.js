@@ -95,15 +95,15 @@ export default class ViewTransformer extends React.Component {
         return new Transform(this.state.scale, this.state.translateX, this.state.translateY);
     }
 
-    componentWillMount () {
+    UNSAFE_componentWillMount () {
         this.gestureResponder = createResponder({
             onStartShouldSetResponder: (evt, gestureState) => true,
             onMoveShouldSetResponderCapture: (evt, gestureState) => true,
             // onMoveShouldSetResponder: this.handleMove,
-            onResponderMove: this.onResponderMove,
-            onResponderGrant: this.onResponderGrant,
-            onResponderRelease: this.onResponderRelease,
-            onResponderTerminate: this.onResponderRelease,
+            onResponderMove: this.onResponderMove.bind(this),
+            onResponderGrant: this.onResponderGrant.bind(this),
+            onResponderRelease: this.onResponderRelease.bind(this),
+            onResponderTerminate: this.onResponderRelease.bind(this),
             onResponderTerminationRequest: (evt, gestureState) => false, // Do not allow parent view to intercept gesture
             onResponderSingleTapConfirmed: (evt, gestureState) => {
                 this.props.onSingleTapConfirmed && this.props.onSingleTapConfirmed();
@@ -375,7 +375,8 @@ export default class ViewTransformer extends React.Component {
             {
                 toValue: 1,
                 duration: duration,
-                easing: Easing.inOut(Easing.ease)
+                easing: Easing.inOut(Easing.ease),
+                useNativeDriver: true
             }
         ).start();
     }

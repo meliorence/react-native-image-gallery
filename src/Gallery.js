@@ -55,7 +55,7 @@ export default class Gallery extends PureComponent {
         this.activeImageResponder = this.activeImageResponder.bind(this);
     }
 
-    componentWillMount () {
+    UNSAFE_componentWillMount () {
         let onResponderReleaseOrTerminate = (evt, gestureState) => {
             if (this.activeResponder) {
                 if (this.activeResponder === this.viewPagerResponder &&
