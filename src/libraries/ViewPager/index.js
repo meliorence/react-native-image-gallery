@@ -87,7 +87,7 @@ export default class ViewPager extends PureComponent {
         });
     }
 
-    componentWillMount () {
+    UNSAFE_componentWillMount () {
         this.gestureResponder = createResponder({
             onStartShouldSetResponder: (evt, gestureState) => true,
             onResponderGrant: this.onResponderGrant,
@@ -260,7 +260,7 @@ export default class ViewPager extends PureComponent {
     }
 
     keyExtractor (item, index) {
-        return index;
+        return index.toString();
     }
 
     renderRow ({ item, index }) {
@@ -316,7 +316,6 @@ export default class ViewPager extends PureComponent {
               style={[style, { flex: 1 }]}
               {...gestureResponder}>
                 <FlatList
-                  {...this.props.flatListProps}
                   style={[{ flex: 1 }, scrollViewStyle]}
                   ref={'innerFlatList'}
                   keyExtractor={this.keyExtractor}
@@ -331,6 +330,7 @@ export default class ViewPager extends PureComponent {
                   // https://github.com/facebook/react-native/issues/15734#issuecomment-330616697 and
                   // https://github.com/facebook/react-native/issues/14945#issuecomment-354651271
                   contentOffset = {{x: this.getScrollOffsetOfPage(parseInt(this.props.initialPage)), y:0}}
+                  {...this.props.flatListProps}
               />
             </View>
         );
