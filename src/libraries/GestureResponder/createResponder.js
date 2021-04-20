@@ -16,7 +16,7 @@ const previousCentroidYOfTouchesChangedAfter = TouchHistoryMath.previousCentroid
 const currentCentroidX = TouchHistoryMath.currentCentroidX;
 const currentCentroidY = TouchHistoryMath.currentCentroidY;
 
-const TAP_UP_TIME_THRESHOLD = 400;
+const TAP_UP_TIME_THRESHOLD = 200;
 const TAP_MOVE_THRESHOLD = 10;
 const MOVE_THRESHOLD = 2;
 
