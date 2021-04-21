@@ -185,6 +185,7 @@ export default class ViewTransformer extends React.Component {
   }
 
   onResponderMove(evt, gestureState) {
+    const {height} = this.state;
     const { minScale } = this.props
     this.cancelAnimation()
 
@@ -224,7 +225,19 @@ export default class ViewTransformer extends React.Component {
       transform.translateX = this.state.translateX + dx / this.state.scale
       transform.translateY = this.state.translateY + dy / this.state.scale
     }
-
+    //not bounce vertical
+    if (this.currentTransform().scale === minScale) {
+      transform.translateY = 0
+    } else {
+      const amplitude =
+        (height * (this.currentTransform().scale - 1)) / (2 * this.currentTransform().scale)
+      if (transform.translateY <= -amplitude) {
+        transform.translateY = -amplitude
+      }
+      if (transform.translateY >= amplitude) {
+        transform.translateY = amplitude
+      }
+    }
     this.updateTransform(transform)
     return true
   }
