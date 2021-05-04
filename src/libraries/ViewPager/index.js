@@ -296,7 +296,7 @@ export default class ViewPager extends PureComponent {
 
     render () {
         const { width, height } = this.state;
-        const { pageDataArray, scrollEnabled, style, scrollViewStyle } = this.props;
+        const { pageDataArray, scrollEnabled, style, scrollViewStyle,initialListSize,initialPage } = this.props;
 
         if (width && height) {
             let list = pageDataArray;
@@ -310,6 +310,11 @@ export default class ViewPager extends PureComponent {
             gestureResponder = {};
         }
 
+        let initialNumToRender = initialListSize;
+        if(initialPage > initialNumToRender - 1){
+            initialNumToRender = initialPage+1
+        }
+
         return (
             <View
               {...this.props}
@@ -317,6 +322,7 @@ export default class ViewPager extends PureComponent {
               {...gestureResponder}>
                 <FlatList
                   {...this.props.flatListProps}
+                  initialNumToRender={initialNumToRender}
                   style={[{ flex: 1 }, scrollViewStyle]}
                   ref={'innerFlatList'}
                   keyExtractor={this.keyExtractor}
