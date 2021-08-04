@@ -1,5 +1,5 @@
 {
-  "name": "react-native-image-gallery",
+  "name": "react-native-image-gallery-fixed",
   "version": "2.1.5",
   "description": "Pure JavaScript image gallery component for iOS and Android",
   "main": "src/Gallery.js",
@@ -8,14 +8,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/archriss/react-native-image-gallery.git"
+    "url": "git+https://github.com/ktjd123/react-native-image-gallery.git"
   },
-  "author": "Archriss",
+  "author": "ktjd123",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/archriss/react-native-image-gallery/issues"
+    "url": "https://github.com/ktjd123/react-native-image-gallery/issues"
   },
-  "homepage": "https://github.com/archriss/react-native-image-gallery#readme",
+  "homepage": "https://github.com/ktjd123/react-native-image-gallery",
   "dependencies": {
     "prop-types": "^15.6.0",
     "react-mixin": "^3.0.5",
