@@ -4,7 +4,8 @@ import {
     FlatList,
     ViewPropTypes,
     InteractionManager,
-    Dimensions
+    Dimensions,
+    Platform
 } from 'react-native';
 import PropTypes from 'prop-types';
 import Scroller from '../Scroller';
@@ -127,6 +128,10 @@ export default class ViewPager extends PureComponent {
         } else if (this.currentPage + 1 >= this.props.pageDataArray.length &&
             this.props.pageDataArray.length !== prevProps.pageDataArray.length) {
             this.scrollToPage(this.props.pageDataArray.length, true);
+        }
+
+        if (prevProps.initialPage !== this.props.initialPage) {
+            Platform.OS == 'android' && this.scroller.startScroll(this.scroller.getCurrX(), 0, this.getScrollOffsetOfPage(parseInt(this.props.initialPage)) - this.scroller.getCurrX(), 0, 400);
         }
     }
 
