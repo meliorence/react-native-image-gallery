@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/archriss/react-native-image-gallery#readme",
   "dependencies": {
+    "deprecated-react-native-prop-types": "^2.3.0",
     "prop-types": "^15.6.0",
     "react-mixin": "^3.0.5",
     "react-timer-mixin": "^0.13.3"
