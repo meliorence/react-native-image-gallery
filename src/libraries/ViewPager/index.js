@@ -2,13 +2,13 @@ import React, { PureComponent } from 'react';
 import {
     View,
     FlatList,
-    ViewPropTypes,
     InteractionManager,
     Dimensions
 } from 'react-native';
 import PropTypes from 'prop-types';
 import Scroller from '../Scroller';
 import { createResponder } from '../GestureResponder';
+import { ViewPropTypes } from 'deprecated-react-native-prop-types';
 
 const MIN_FLING_VELOCITY = 0.5;
 
