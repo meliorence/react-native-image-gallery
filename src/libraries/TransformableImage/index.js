@@ -1,7 +1,8 @@
 import React, { PureComponent } from 'react';
-import { View, Text, Image, ViewPropTypes } from 'react-native';
+import { View, Text, Image } from 'react-native';
 import PropTypes from 'prop-types';
 import ViewTransformer from '../ViewTransformer';
+import { ViewPropTypes } from 'deprecated-react-native-prop-types';
 
 export default class TransformableImage extends PureComponent {
     static propTypes = {
