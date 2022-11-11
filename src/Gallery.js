@@ -1,10 +1,10 @@
 import React, { PureComponent } from 'react';
 import { View } from 'react-native';
-import { ViewPropTypes } from 'deprecated-react-native-prop-types';
 import PropTypes from 'prop-types';
 import { createResponder } from './libraries/GestureResponder';
 import TransformableImage from './libraries/TransformableImage';
 import ViewPager from './libraries/ViewPager';
+import { ViewPropTypes } from 'deprecated-react-native-prop-types';
 
 const DEFAULT_FLAT_LIST_PROPS = {
     windowSize: 3
