@@ -1,6 +1,6 @@
 {
-  "name": "react-native-image-gallery",
-  "version": "2.1.5",
+  "name": "react-native-image-gallery-cg",
+  "version": "2.2.0",
   "description": "Pure JavaScript image gallery component for iOS and Android",
   "main": "src/Gallery.js",
   "scripts": {
@@ -8,15 +8,16 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/archriss/react-native-image-gallery.git"
+    "url": "git+https://github.com/cgaravito/react-native-image-gallery.git"
   },
   "author": "Archriss",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/archriss/react-native-image-gallery/issues"
+    "url": "https://github.com/cgaravito/react-native-image-gallery/issues"
   },
-  "homepage": "https://github.com/archriss/react-native-image-gallery#readme",
+  "homepage": "https://github.com/cgaravito/react-native-image-gallery#readme",
   "dependencies": {
+    "deprecated-react-native-prop-types": "^4.0.0",
     "prop-types": "^15.6.0",
     "react-mixin": "^3.0.5",
     "react-timer-mixin": "^0.13.3"
