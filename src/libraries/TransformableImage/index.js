@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { View, Text, Image, ViewPropTypes } from 'react-native';
+import { View, Text, Image, ViewPropTypes, ViewStyle } from 'react-native';
 import PropTypes from 'prop-types';
 import ViewTransformer from '../ViewTransformer';
 
@@ -12,7 +12,7 @@ export default class TransformableImage extends PureComponent {
             ]).isRequired,
             dimensions: PropTypes.shape({ width: PropTypes.number, height: PropTypes.number })
         }).isRequired,
-        style: ViewPropTypes ? ViewPropTypes.style : View.propTypes.style,
+        style: ViewPropTypes ? ViewPropTypes.style : ViewStyle,
         onLoad: PropTypes.func,
         onLoadStart: PropTypes.func,
         enableTransform: PropTypes.bool,
