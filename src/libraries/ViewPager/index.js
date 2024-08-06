@@ -4,7 +4,8 @@ import {
     FlatList,
     ViewPropTypes,
     InteractionManager,
-    Dimensions
+    Dimensions,
+    ViewStyle
 } from 'react-native';
 import PropTypes from 'prop-types';
 import Scroller from '../Scroller';
@@ -21,7 +22,7 @@ export default class ViewPager extends PureComponent {
         ...View.propTypes,
         initialPage: PropTypes.number,
         pageMargin: PropTypes.number,
-        scrollViewStyle: ViewPropTypes ? ViewPropTypes.style : View.propTypes.style,
+        scrollViewStyle: ViewPropTypes ? ViewPropTypes.style : ViewStyle,
         scrollEnabled: PropTypes.bool,
         renderPage: PropTypes.func,
         pageDataArray: PropTypes.array,
@@ -260,7 +261,7 @@ export default class ViewPager extends PureComponent {
     }
 
     keyExtractor (item, index) {
-        return index;
+        return index.toString();
     }
 
     renderRow ({ item, index }) {
