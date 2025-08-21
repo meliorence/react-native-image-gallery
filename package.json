@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/archriss/react-native-image-gallery#readme",
   "dependencies": {
+    "deprecated-react-native-prop-types": "^5.0.0",
     "prop-types": "^15.6.0",
     "react-mixin": "^3.0.5",
     "react-timer-mixin": "^0.13.3"
@@ -35,5 +36,11 @@
     "eslint-plugin-promise": "^3.5.0",
     "eslint-plugin-react": "^7.0.1",
     "eslint-plugin-standard": "^3.0.1"
+  },
+  "resolutions": {
+    "shelljs": "^0.8.5",
+    "ajv": "^6.12.3",
+    "semver": "^5.7.2",
+    "babel-traverse": "6.26.0"
   }
 }
